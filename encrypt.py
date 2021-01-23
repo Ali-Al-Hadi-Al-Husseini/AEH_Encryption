@@ -5,8 +5,7 @@ from hashlib import sha256
 def AEH(thelist,key):
     coded  = []
     new_txt = ''
-    key =sha256(key.encode())
-    new_key = str(key.hexdigest())
+    new_key = str(sha256(key.encode()).hexdigest())
     print(new_key)
     print(len(new_key))
     for i in range(len(thelist)):
@@ -20,7 +19,7 @@ def AEH(thelist,key):
 
     return new_txt
 def AEHD(txt,key):
-    pass
+    newkey = str(sha256(key.encode()).hexdigest())
     
 
 print(AEH('Hellolantslktbgs','trialhnf'))
