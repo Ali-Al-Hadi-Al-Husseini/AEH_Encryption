@@ -20,6 +20,10 @@ def AEH(thelist,key):
     return new_txt
 def AEHD(txt,key):
     newkey = str(sha256(key.encode()).hexdigest())
+    new_txt = ''
+    for i in range(len(txt)):
+        x = ord(txt[i])-ord(newkey[i])
+        new_txt.append(chr(x))
     
 
 print(AEH('Hellolantslktbgs','trialhnf'))
