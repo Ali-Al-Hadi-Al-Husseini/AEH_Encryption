@@ -3,10 +3,12 @@ from hashlib import sha256
 
     
 class enc:
+    def __init__(self,key):
+        self.key = key 
     @classmethod
-    def create_list(self,key,size):
+    def create_list(self,size):
         x = int(size/64) + 1
-        this_list= [sha256(key.encode()).hexdigest()]
+        this_list= [sha256(self.key.encode()).hexdigest()]
         this_list.extend(self.split_hash(this_list[0]))
         srt_k = ''
 
