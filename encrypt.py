@@ -1,6 +1,7 @@
 # 33 --> 126
 import numpy as np
 from hashlib import sha256
+from enc import enc
 
 def AEH(thelist,key):
     coded  = []
