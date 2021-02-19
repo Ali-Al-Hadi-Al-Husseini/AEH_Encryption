@@ -2,32 +2,42 @@ from hashlib import sha256
 
 
     
-class enc:
-    def __init__(self,key):
-        self.key = key 
+class Enc:
+
+    # creater a string that is as the size of the file
     @classmethod
-    def create_list(self,size):
-        x = int(size/64) + 1
-        this_list= [sha256(self.key.encode()).hexdigest()]
-        this_list.extend(self.split_hash(this_list[0]))
-        srt_k = ''
+    def create_list(cls,Key,size):
+        if size <= 64:
+            new_key = []
+            new_key.append(Key)
+            return new_key
 
-        for i in range(x-1):
-            y = ((len(this_list)+1)//2 ) -1
-            for i in this_list[y:]:
-                this_list.extend(self.split_hash(i)) 
-        for i in this_list:
-            srt_k += i
+        else:
+            new_keys = []
+            new_list = cls.create_new_list( cls.create_list( Key,(size * 5) // 2))
+            new_keys.extend( new_list)
+            return new_keys
 
-        return str_k
+    #this method take one parameter (hash as a string) and then returns the hash of the half of the key
     @classmethod
-    def split_hash(self,key):
-        x = int(len(key) /2)
-        return list([sha256(key[x:].encode()).hexdigest(),sha256(key[:x].encode()).hexdigest()])
-    
-    
+    def split_and_hash(cls,key):
+        half_key = int(len(key) /2) + 1
+        return list((sha256(key[half_key:].encode()).hexdigest(),sha256(key[:half_key].encode()).hexdigest()))
 
-    
+    @classmethod
+    def create_new_list(cls,keys):
+        new_keys = []
+        for key in keys:
+            new_keys.extend( cls.split_and_hash(key))
 
+        return new_keys
+
+    #write the last keys the keys.txt file
+    @classmethod
+    def  create_file(cls,key,size):
+        keys_list = cls.create_list(key,size)
+        with open('keys.txt', 'w') as temp:
+            for key in keys_list:
+                temp.write(key)
 
 
