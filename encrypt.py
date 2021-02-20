@@ -1,38 +1,41 @@
-import os
+
 from hashlib import sha256
 from enc import Enc
-#687
 
 class AEH:
     # encrypts the text that was given
+
     @classmethod
-    def Encrypt(cls,text, key, name = 'Encrypted_By_AEH'):
+    def Encrypt(cls,text, key):
         len_text = len(text)
-        num_list = cls.generate_keylist(len_text, key)
+        num_list = Enc.generate_keylist(len_text, key)
         encoded = ''
-        for char in range(len_text):
-            #Not done yet
-            pass
+        dict1, dict2 = Enc.get_dicts()
 
+        for idx in range(len_text):
+            temp_num = dict2[text[idx]] + num_list[idx]
+            temp_char = dict1[( temp_num % 84)]
+            encoded += temp_char
 
+        return encoded
 
-        
-    #generates a key by using Enc from enc.py
     @classmethod
-    def generate_keylist(cls,txt_size,key):
-        Enc.create_file(key, txt_size)
-        num_list = []
+    def Decrypt(cls,endcoded,key):
+        len_text = len(endcoded)
+        num_list = Enc.generate_keylist(len_text, key)
+        decoded = ''
+        dict1, dict2 = Enc.get_dicts()
 
-        with open('keys.txt','r') as keys:
-            key = keys.read()
+        for idx in range(len_text):
+            temp_num = (dict2[endcoded[idx]]-num_list[idx]) % 84
+            temp_char = dict1[temp_num]
+            decoded += temp_char
 
-            for idx in range(1, int(len(key) // 5) + 1):
-                if idx > len(key):
-                    break
+        return decoded
+    
 
-                else:
-                    temp_list = key[(idx * 5) - 5:idx * 5]
-                    num = ((( temp_list[2] ** temp_list[1]) + temp_list[0]) *temp_list[4] ) // temp_list[3]
-                    num_list.append(num)
-        os.remove('key.text')
-        return num_list
+x = 'mousdylilo98'
+y = 'lit'
+z = AEH.Encrypt(x,y)
+print(z)
+print(AEH.Decrypt(z,y))
