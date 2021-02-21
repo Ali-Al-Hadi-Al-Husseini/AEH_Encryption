@@ -14,7 +14,7 @@ class AEH:
 
         for idx in range(len_text):
             temp_num = dict2[text[idx]] + num_list[idx]
-            temp_char = dict1[( temp_num % 84)]
+            temp_char = dict1[( temp_num % 85)]
             encoded += temp_char
 
         return encoded
@@ -27,7 +27,7 @@ class AEH:
         dict1, dict2 = Enc.get_dicts()
 
         for idx in range(len_text):
-            temp_num = (dict2[endcoded[idx]]-num_list[idx]) % 84
+            temp_num = (dict2[endcoded[idx]]-num_list[idx]) % 85
             temp_char = dict1[temp_num]
             decoded += temp_char
 
