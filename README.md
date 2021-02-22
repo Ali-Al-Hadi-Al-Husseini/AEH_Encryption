@@ -13,7 +13,7 @@ from encrypt import AEH
 txt = 'something'
 key = 'key'
 encrypted = AEH.Encrypt(txt, key)
-dcrypted = AEH.decrypt?(txt, key
+dcrypted = AEH.Decrypt(txt, key)
 ```
 
 ## Contributing
