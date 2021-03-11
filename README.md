@@ -1,9 +1,9 @@
 # Encryption
-This is my atempet to make an encryption that is near to the security of The OPT encryption 
+This a new way to enctypt files 
 
 ```bash
 pip install AEH
-pip3 install AEh
+pip3 install AEH
 ```
 
 ## Usage
