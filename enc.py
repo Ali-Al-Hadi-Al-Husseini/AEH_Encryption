@@ -14,7 +14,7 @@ class Enc:
 
         else:
             new_keys = []
-            new_list = cls.create_new_list( cls.create_list1( Key,(size // 2)))
+            new_list = cls.create_new_list( cls.create_list( Key,(size // 2)))
             new_keys.extend( new_list)
             return new_keys
 
@@ -139,17 +139,17 @@ class Enc:
     # changes the order of each letter in the txt  passed which give an exrtra layer of protection
     @classmethod
     def matrix_manipultion(cls,txt, key):
-    new_nums = []
-    nums = []
-    temp_num = [1, 3, 0, 2]
-    for idx in range(1, len(key) // 8):
-        nums = key[(idx - 1) * 8: idx * 8 - 1]
-        try:
-            x = cls.num(nums) % (len(temp_num))
-            new_nums.append(temp_num.pop(x))
-        except ZeroDivisionError:
-            pass
-    return new_nums
+        new_nums = []
+        nums = []
+        temp_num = [1, 3, 0, 2]
+        for idx in range(1, len(key) // 8):
+            nums = key[(idx - 1) * 8: idx * 8 - 1]
+            try:
+                x = cls.num(nums) % (len(temp_num))
+                new_nums.append(temp_num.pop(x))
+            except ZeroDivisionError:
+                pass
+        return new_nums
 
     @classmethod
     def num(cls,nums):
