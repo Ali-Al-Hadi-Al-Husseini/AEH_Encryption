@@ -4,7 +4,7 @@ from AEH import AEH
 
 path = str(input("Path:"))
 key = str(input("key:"))
-file = open('/home/trial/Desktop/learn/text.txt', 'r')
+file = open(path, 'r')
 
 text  = file.read()
 file.close()
