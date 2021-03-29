@@ -153,9 +153,27 @@ class Enc:
     def convert_to_hash(cls,txt):
         return sha256(txt.encode()).hexdigest()
 
+    @classmethod
+    def split_(cls,te,num):
+        new = []
+        len_te = len(te)
+        mod_te = len_te % num
+        
+
+        for idx in range(int(len_te/num)):
+            new.append(te[idx*16: (idx+1)*16])
+
+        if  mod_te != 0:
+            temp_list = te[len_te - mod_te :]
+        new.append(temp_list)
+        return new
+
+
+
 class Matrix:
     def __init__(self,txt):
         self.matrix = self.convert_to_matrix(txt)
+        
 
     def convert_to_matrix(self ,txt):
         mat = [
@@ -173,9 +191,10 @@ class Matrix:
         return mat
 
 
-    def shift_rows(self, row_shifts):
+    def shift_rows(self, key):
         new_matrix = []
-
+        row_shifts = self.matrix_manipultions(key)
+        
         for num_row in range(len(self.matrix)):
             new_matrix.append(self.matrix[row_shifts[num_row]])
 
@@ -186,17 +205,19 @@ class Matrix:
         return list(self.matrix)
 
 
-    def shift_colunms(self, col_shifts):
+    def shift_colunms(self, key):
         new_matrix = [[],
-                        [],
-                        [],
-                        []]
+                      [],
+                      [],
+                      []]
+        col_shifts = self.matrix_manipultions(key)
 
         for num_row in range(len(self.matrix)):
             for col in range(len(self.matrix[num_row])):
                 new_matrix[num_row].append(self.matrix[num_row][col_shifts[col]])
         self.matrix = new_matrix
 
+    ##NEEED TO BE FIXED TO MUCH IRETION
     def matrix_manipultions(self, key):
         new_nums = []
         nums = []
@@ -220,14 +241,73 @@ class Matrix:
         return new_num
 
     def mix(self,key):
-        hashed_key = Enc.convert_to_hash(key)
-        key_1, key_2 = Enc.split_and_hash(hashed_key)
-        row_shifts ,col_shifts = self.matrix_manipultions(key_1), self.matrix_manipultions(key_2)
-
-        self.shift_rows(row_shifts)
-        self.shift_colunms(col_shifts)
+        key_1, key_2 = Enc.split_and_hash(key)
 
 
+        self.shift_rows(key_2)
+        self.shift_colunms(key_1)
+
+
+    def un_shift_colunms(self,key):
+        col_shifts = self.matrix_manipultions(key)
+        new_mat = []
+        
+        for row in (self.matrix):
+            new_mat.append(self.un_shift_list(row,col_shifts))
+
+        self.matrix = new_mat
+
+    def un_shift_list(self,arr,shifts):
+        new_list = ['','','','']
+        for idx in range(len(shifts)):
+            new_list[shifts[idx]] = arr[idx]
+        return new_list
+
+    def un_shift_rows(self,key):
+        row_shifts = self.matrix_manipultions(key)
+        new_mat = [[],
+                   [],
+                   [],
+                   [],]
+        for idx in range(len(row_shifts)):
+            new_mat[row_shifts[idx]] =  self.matrix[idx]
+        self.matrix = new_mat
+        
+    def un_mix(self,key):
+        key_1 ,key_2 = Enc.split_and_hash(key)
     
-    
+
+        self.un_shift_colunms(key_1)
+        self.un_shift_rows(key_2)
+        
+    def print(self):
+        for row in self.matrix:
+            print(row)
+
+    def stringfy(self):
+        txt = ''
+        for row in self.matrix:
+            for col in row:
+                txt += col
+        return txt
+
+    def stringfi(self):
+        if type(self.matrix[0][0]) == str:
+            return self.stringfy()
+        else:
+            for row in range(len(self.matrix)):
+                for col in range(len(self.matrix[row])):
+                    self.matrix[row][col] = self.matrix[row][col].stringfi()
+
+    def mixer(self,key):
+        if type(self.matrix[0][0]) == str:
+            self.mix(key)
+            return self.stringfy()
+        else:
+            for row in range(len(self.matrix)):
+                for col in range(len(self.matrix[row])):
+                    self.matrix[row][col] = self.matrix[row][col].mixer(key)
+
+
+
     
