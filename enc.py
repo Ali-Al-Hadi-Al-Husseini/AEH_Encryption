@@ -73,8 +73,16 @@ class Enc:
 
         try:
             num1 += int((((temp_list[2] ** temp_list[1]) +
-                          temp_list[0]) * temp_list[4]) // temp_list[3])
+                          temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
             # in cases where temp_list[3] can be zero so thats why we used try/execpt here
+            if num1 == 0:
+                num1 = int(
+                    (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+
+            if num1 == 0:
+                num1 = int((  (temp_list[0] + temp_list[1] +
+                          temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+
 
         except ZeroDivisionError:
             # provides two alternative number if num1 has an error
@@ -88,13 +96,9 @@ class Enc:
 
                 num1 = int((  (temp_list[0] + temp_list[1] +
                           temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
-        if num1 != 0:
 
-            return num1
+        return num1
 
-        else:
-            print('this key is not safe enough')
-            return None
 
     # converts  a list which is normally passed from the class method generate_new_dicts
     @classmethod
@@ -123,6 +127,7 @@ class Enc:
 
         new_character_list = []
         keys = cls.generate_keylist(len(character_list), key)
+
         for idx in range(len(character_list)):
             new_character_list.append(character_list.pop(
                 keys[idx] % len(character_list)))
@@ -154,160 +159,45 @@ class Enc:
         return sha256(txt.encode()).hexdigest()
 
     @classmethod
-    def split_(cls,te,num):
-        new = []
-        len_te = len(te)
-        mod_te = len_te % num
-        
-
-        for idx in range(int(len_te/num)):
-            new.append(te[idx*16: (idx+1)*16])
-
-        if  mod_te != 0:
-            temp_list = te[len_te - mod_te :]
-        new.append(temp_list)
-        return new
-
-
-
-class Matrix:
-    def __init__(self,txt):
-        self.matrix = self.convert_to_matrix(txt)
-        
-
-    def convert_to_matrix(self ,txt):
-        mat = [
-            [],
-            [],
-            [],
-            []
-        ]
-        row = 0
-        for char in txt :
-            if len(mat[row]) >= 4:
-                row += 1
-            mat[row].append(char)
-
-        return mat
-
-
-    def shift_rows(self, key):
-        new_matrix = []
-        row_shifts = self.matrix_manipultions(key)
-        
-        for num_row in range(len(self.matrix)):
-            new_matrix.append(self.matrix[row_shifts[num_row]])
-
-        self.matrix = new_matrix
-
-
-    def get_matrix(self):
-        return list(self.matrix)
-
-
-    def shift_colunms(self, key):
-        new_matrix = [[],
-                      [],
-                      [],
-                      []]
-        col_shifts = self.matrix_manipultions(key)
-
-        for num_row in range(len(self.matrix)):
-            for col in range(len(self.matrix[num_row])):
-                new_matrix[num_row].append(self.matrix[num_row][col_shifts[col]])
-        self.matrix = new_matrix
-
-    ##NEEED TO BE FIXED TO MUCH IRETION
-    def matrix_manipultions(self, key):
+    def generate_shuffle_list(cls,len_txt,key):
         new_nums = []
         nums = []
-        temp_num = [1, 3, 0, 2]
-
-        for idx in range(1, len(key) // 8):
-            nums = key[(idx - 1) * 8: idx * 8 - 1]
+        temp_num = list(range(len_txt))
+        nums = cls.generate_keylist(len_txt, key)
+        for idx in range(len_txt):
             try:
-                x = self.num(nums) % (len(temp_num))
-                new_nums.append(temp_num.pop(x))
+                new_nums.append(temp_num.pop(nums[idx] % len(temp_num)))
             except ZeroDivisionError:
                 pass
+
         return new_nums
 
-    def num(self, nums):
-        new_num = 0
 
-        for idx in range(len(nums)):
-            new_num += ord(nums[idx])
-
-        return new_num
-
-    def mix(self,key):
-        key_1, key_2 = Enc.split_and_hash(key)
-
-
-        self.shift_rows(key_2)
-        self.shift_colunms(key_1)
-
-
-    def un_shift_colunms(self,key):
-        col_shifts = self.matrix_manipultions(key)
-        new_mat = []
+    @classmethod
+    def shuffle(cls, txt, key):
+        new_txt = ''
+        row_shifts = cls.generate_shuffle_list(len(txt), key)
         
-        for row in (self.matrix):
-            new_mat.append(self.un_shift_list(row,col_shifts))
+        for idx in range(len(txt)):
+            new_txt += txt[row_shifts[idx]]
 
-        self.matrix = new_mat
+        return new_txt
 
-    def un_shift_list(self,arr,shifts):
-        new_list = ['','','','']
+    @classmethod
+    def un_shuffle(cls, txt, key):
+        shifts = cls.generate_shuffle_list(len(txt), key)
+        new_list = ['' for char in txt]
         for idx in range(len(shifts)):
-            new_list[shifts[idx]] = arr[idx]
-        return new_list
-
-    def un_shift_rows(self,key):
-        row_shifts = self.matrix_manipultions(key)
-        new_mat = [[],
-                   [],
-                   [],
-                   [],]
-        for idx in range(len(row_shifts)):
-            new_mat[row_shifts[idx]] =  self.matrix[idx]
-        self.matrix = new_mat
+            new_list[shifts[idx]] = txt[idx]
+        return Enc.convert_to_str(new_list)
         
-    def un_mix(self,key):
-        key_1 ,key_2 = Enc.split_and_hash(key)
-    
 
-        self.un_shift_colunms(key_1)
-        self.un_shift_rows(key_2)
-        
-    def print(self):
-        for row in self.matrix:
-            print(row)
+    @classmethod
+    def convert_to_str(cls,listt):
+        new_str = ''
+        for char in listt:
+            new_str+=char
 
-    def stringfy(self):
-        txt = ''
-        for row in self.matrix:
-            for col in row:
-                txt += col
-        return txt
-
-    def stringfi(self):
-        if type(self.matrix[0][0]) == str:
-            return self.stringfy()
-        else:
-            for row in range(len(self.matrix)):
-                for col in range(len(self.matrix[row])):
-                    self.matrix[row][col] = self.matrix[row][col].stringfi()
-
-    def mixer(self,key):
-        if type(self.matrix[0][0]) == str:
-            self.mix(key)
-            return self.stringfy()
-        else:
-            for row in range(len(self.matrix)):
-                for col in range(len(self.matrix[row])):
-                    self.matrix[row][col] = self.matrix[row][col].mixer(key)
+        return new_str
 
 
-
-    
