@@ -1,15 +1,11 @@
 # Encryption
 This a new way to enctypt files 
 
-```bash
-pip install AEH
-pip3 install AEH
-```
 
 ## Usage
 
 ```python
-from encrypt import AEH
+from AEH import AEH
 txt = 'something'
 key = 'key'
 encrypted = AEH.Encrypt(txt, key)
