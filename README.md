@@ -1,5 +1,5 @@
 # Encryption
-This a new way to enctypt files 
+This a new way to encrypt text 
 
 
 ## Usage
