@@ -20,7 +20,7 @@ class AEH:
             temp_char = dict1[( temp_num % len(dict1.keys()))]
             encoded += temp_char
 
-        remove('keys.txt')
+        remove('./keys.txt')
         return encoded
 
     @classmethod
@@ -35,7 +35,7 @@ class AEH:
             temp_num = (dict2[endcoded[idx]]-num_list[idx]) % len(dict1.keys())
             temp_char = dict1[temp_num]
             decoded += temp_char
-        remove('keys.txt')
+        remove('./keys.txt')
         return decoded
     
     @classmethod
