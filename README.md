@@ -1,5 +1,5 @@
-# Encryption
-This a new way to encrypt text 
+# AEH Encryption
+This a new Encryption algorithm founded by ALI AL HADI
 
 
 ## Usage
