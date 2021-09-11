@@ -7,8 +7,7 @@ class Enc:
     @classmethod
     def create_list(cls, Key, size):
         if size <= 64:
-            new_key = []
-            new_key.append(Key)
+            new_key = [Key]
             return new_key
 
         else:
@@ -34,34 +33,33 @@ class Enc:
 
     # write the  generated list from create_new_list in a file called keys.txt
     @classmethod
-    def create_file(cls, key, size):
+    def create_hash_list(cls, key, size):
         keys_list = cls.create_list(key, size * 5)
-        with open('keys.txt', 'w') as temp:
-            for key in keys_list:
-                temp.write(key)
+        result = ""
+        for key in keys_list:
+            result += key
+        return list(result)
 
     """ takes the size of the text that to be encrypted  and takes the key to genrate the file (keys.txt) using the class
-     method create_file adn then take  the  series of hashes and pass it to the nums classmethod"""
+     method create_hash_list adn then take  the  series of hashes and pass it to the nums classmethod"""
     @classmethod
-    def generate_keylist(cls, txt_size, key):
-        cls.create_file(key, txt_size)
+    def generate_keylist(cls, txt_size, key,case="NONE"):
+        key = cls.create_hash_list(key, txt_size)
         num_list = []
-        with open('keys.txt', 'r') as keys:
-            key = list(keys.read())
 
-            for idx in range(1, int(len(key) // 5) + 1):
-                if idx > len(key):
-                    break
+        for idx in range(1, int(len(key) // 5) + 1):
+            if idx > len(key):
+                break
 
-                else:
-                    temp_list = key[(idx * 5) - 5:idx * 5]
-                    num_list.append(cls.generate_nums(temp_list)) 
+            else:
+                temp_list = key[(idx * 5) - 5  :idx * 5]
+                num_list.append(cls.generate_nums(temp_list,case)) 
 
         return num_list
 
     """ takes  a list of len 5 and genrate a number from it to pass it back to  generate_keylist """
     @classmethod
-    def generate_nums(cls, temp_list):
+    def generate_nums(cls, temp_list,Case='NONE'):
         # checks to see if ther are any letter in the list and then change it to numbers
         for idx in range(len(temp_list)):
             if type(temp_list[idx]) == str:
@@ -75,13 +73,14 @@ class Enc:
             num1 += int((((temp_list[2] ** temp_list[1]) +
                           temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
             # in cases where temp_list[3] can be zero so thats why we used try/execpt here
-            if num1 == 0:
-                num1 = int(
-                    (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+            if Case != 'NONE':
+                if num1 == 0:
+                    num1 = int(
+                        (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
-            if num1 == 0:
-                num1 = int((  (temp_list[0] + temp_list[1] +
-                          temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+                if num1 == 0:
+                    num1 = int((  (temp_list[0] + temp_list[1] +
+                            temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
 
 
         except ZeroDivisionError:
@@ -126,7 +125,7 @@ class Enc:
         character_list = cls.get_character_list()
 
         new_character_list = []
-        keys = cls.generate_keylist(len(character_list), key)
+        keys = cls.generate_keylist(len(character_list), key,'A')
 
         for idx in range(len(character_list)):
             new_character_list.append(character_list.pop(
@@ -152,7 +151,7 @@ class Enc:
                 'y', 'z', 'p', '\n', '…', '!', '’', '→', '‘', '“', '”', '{', '}', '"', '&', '—', '×',
                 '–', '%', '#', 'ض', 'ص', 'ث', 'ق',
                 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د', 'ط', 'ك', 'م', 'ن', 'ت', 'ا', 'ل'
-                , 'ب', 'ي', 'س', 'ش', 'ئ', 'ء', 'ؤ', 'ر', 'ﻻ', 'ى', 'ة', 'و', 'ز', 'ظ']
+                , 'ب', 'ي', 'س', 'ش', 'ئ', 'ء', 'ؤ', 'ر', 'ﻻ', 'ى', 'ة', 'و', 'ز', 'ظ','|']
     
     @classmethod
     def convert_to_hash(cls,txt):
@@ -199,5 +198,65 @@ class Enc:
             new_str+=char
 
         return new_str
+
+
+
+class Block:
+    def __init__(self,bytes):
+        self.bytes = bytes
+
+    def mix(self,key):
+        self.bytes = Enc.shuffle(self.bytes,key)
+    
+    def un_mix(self,key):
+        self.bytes = Enc.un_shuffle(self.bytes,key)
+
+
+class Block_Enc: 
+
+    @classmethod
+    def split_to_parts(cls, text,block_size = 16):
+        blocks = []
+        last_idx = 0
+        for idx in range(len(text) // block_size):
+            splitted_txt = text[idx * block_size : (idx + 1 ) * block_size]
+            blocks.append(Block(splitted_txt))
+            last_idx = idx
+
+        txt =text[(last_idx + 1) * block_size + 1:]
+        differnce = 0
+        if txt != '':
+            last_block  = Block(txt)
+            blocks.append(last_block)
+            differnce =  block_size - len(blocks[-1].bytes)
+
+        return blocks
+
+    @classmethod
+    def connect_blocks(cls, blocks):
+        result = ''
+
+        for block in blocks:
+            result += block.bytes
+        return result
+
+    @classmethod
+    def xor_str(cls,str_1, str_2,dict_1, dict_2):
+        new_list = []
+
+        for char_1,char_2 in zip(str_1, str_2):
+            new_list.append(dict_1[( dict_2[char_1] ^ dict_2[char_2] ) % (len(dict_1.keys()) +1)])
+
+        return "". join(new_list)    
+    
+    @classmethod
+    def mix_blocks(cls, blocks, key_list):
+        for idx  in range(len(blocks)):
+            blocks[idx].mix(key_list[idx])
+
+    @classmethod
+    def un_mix_blocks(cls, blocks, key_list):
+        for idx  in range(len(blocks)):
+            blocks[idx].un_mix(key_list[idx])
 
 
