@@ -1,4 +1,5 @@
 from enc import Enc , Block_Enc
+from os import remove
 from hashlib import sha256
 
 
@@ -91,11 +92,12 @@ class AE:
         size = len(text) +((len(text) % 64) - 64 )
         hashed_key = Enc.convert_to_hash(key)
 
+        text = cls.Encrypt(text,key)
         un_joind = Enc.create_hash_list(hashed_key, size)
         key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
 
         blocks = Block_Enc.split_to_parts(text,64)
-        # Block_Enc.mix_blocks(blocks,key_list)
+        Block_Enc.mix_blocks(blocks,key_list)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         for idx in range(len(blocks)):
@@ -120,11 +122,12 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         for idx in range(len(blocks)):
-            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2)
+            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2,'-')
         
 
-        # Block_Enc.un_mix_blocks(blocks, key_list)
+        Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
+        result = list(cls.Decrypt(result,key))
 
         while result[-1] == "%":
             result.pop()
