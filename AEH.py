@@ -1,7 +1,4 @@
 from enc import Enc , Block_Enc
-from os import remove
-from hashlib import sha256
-
 
 class AE:
     # encrypts the text that was given
@@ -101,7 +98,8 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         for idx in range(len(blocks)):
-            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx], dict_1, dict_2)
+            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2)
+
         
         result = list(Block_Enc.connect_blocks(blocks))
 
@@ -122,8 +120,7 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         for idx in range(len(blocks)):
-            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2,'-')
-        
+            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2, False)
 
         Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
