@@ -231,11 +231,10 @@ class Block_Enc:
             last_idx = idx
 
         txt =text[(last_idx + 1) * block_size + 1:]
-        differnce = 0
+
         if txt != '':
             last_block  = Block(txt)
             blocks.append(last_block)
-            differnce =  block_size - len(blocks[-1].bytes)
 
         return blocks
 
@@ -248,12 +247,26 @@ class Block_Enc:
         return result
 
     @classmethod
-    def xor_str(cls,str_1, str_2,dict_1, dict_2,op= "+"):
+    def xor_str(cls,str_1, str_2,dict_1, dict_2,enc=True):
         new_str = ""
+        shift_num = 0
+        for char in str_2:
+            shift_num += dict_2[char]
 
-        for char_1,char_2 in zip(str_1, str_2):
-            new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
+        shift_num %= 64
+        if enc:
+            str_1 = Enc.shuffle(str_1,str_2)
+            str_1 = cls.string_bit_shift(str_1,dict_1,dict_2, shift_num)
 
+            for char_1,char_2 in zip(str_1, str_2):
+                new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
+        else :
+            for char_1,char_2 in zip(str_1, str_2):
+                new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
+            
+            new_str = cls.string_bit_shift(new_str,dict_1,dict_2, -shift_num)
+            new_str = Enc.un_shuffle(new_str,str_2)
+        # str_1.bytes = new_str
         return new_str
     @classmethod
     def mix_blocks(cls, blocks, key_list):
@@ -264,5 +277,35 @@ class Block_Enc:
     def un_mix_blocks(cls, blocks, key_list):
         for idx  in range(len(blocks)):
             blocks[idx].un_mix(key_list[idx])
+
+    @classmethod
+    def string_bit_shift(cls,string,dict_1, dict_2,shift_num):
+        num_list = [str(bin(dict_2[char]))[2:] for char in string]
+
+
+        for idx in range(len(num_list)):
+            if  len(num_list[idx]) < 8:
+                diff = 8 - len(num_list[idx]) 
+                adding = "".join(["0" for _ in range(diff)])
+                adding += num_list[idx]
+                num_list[idx] = adding
+    
+        byte_str = "".join(num_list)
+        byte_str = cls.string_shift(byte_str,shift_num)
+
+
+        byte_list =[]
+
+        for idx in range(len(byte_str) // 8):
+            byte_list.append(byte_str[idx * 8:(idx+1) * 8])
+        
+        return "".join([dict_1[int(byt,2)] for byt in byte_list])
+
+    @classmethod
+    def string_shift(cls,string,shift_num ):
+        new_string = string[shift_num:]
+        new_string += string[:shift_num]
+        return new_string
+        
 
 
