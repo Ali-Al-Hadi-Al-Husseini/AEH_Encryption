@@ -1,4 +1,4 @@
-from hashlib import sha256
+from hashlib import new, sha256
 
 
 class Enc:
@@ -206,17 +206,59 @@ class Enc:
 
         return new_str
 
+    @classmethod
+    def shuffle_bin(cls,txt,key):
+        temp = txt 
+        keys = list(cls.create_list(key,(64)*4))
+        
+        for idx in range(len(keys)):
+            temp = cls.shuffle_helper(temp,keys[idx])
+        return temp
 
+    @classmethod
+    def un_shuffle_bin(cls,txt,key):
+        temp = txt 
+        keys = list(cls.create_list(key,(64)*4))
+
+        for idx in range(len(keys)):
+            temp = cls.un_shuffle_helper(temp,keys[len(keys)-1-idx])
+        return temp
+
+    @classmethod
+    def shuffle_helper(cls,txt,key):
+        dict1,dict2 = cls.get_dicts(key)
+        new_txt = ''
+        for char in txt:
+            temp = bin(dict2[char])[2:]  
+            while len(temp) < 8:
+                temp = '0' + temp
+            new_txt +=  temp     
+
+        shuffled_bytes =  Block_Enc.split_to_parts(cls.shuffle(new_txt,key),8)
+        return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
+
+    @classmethod
+    def un_shuffle_helper(cls,txt,key):
+        dict1,dict2 = cls.get_dicts(key)
+        new_txt = ''
+        for char in txt:
+            temp = bin(dict2[char])[2:]  
+            while len(temp) < 8:
+                temp = '0' + temp
+            new_txt += temp
+
+        shuffled_bytes =  Block_Enc.split_to_parts(cls.un_shuffle(new_txt,key),8)
+        return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
 
 class Block:
     def __init__(self,bytes):
         self.bytes = bytes
 
     def mix(self,key):
-        self.bytes = Enc.shuffle(self.bytes,key)
+        self.bytes = Enc.shuffle_bin(self.bytes,key)
     
     def un_mix(self,key):
-        self.bytes = Enc.un_shuffle(self.bytes,key)
+        self.bytes = Enc.un_shuffle_bin(self.bytes,key)
 
 
 class Block_Enc: 
@@ -307,5 +349,4 @@ class Block_Enc:
         new_string += string[:shift_num]
         return new_string
         
-
 
