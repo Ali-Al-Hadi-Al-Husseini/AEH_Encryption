@@ -312,13 +312,19 @@ class Block_Enc:
         return new_str
     @classmethod
     def mix_blocks(cls, blocks, key_list):
+
         for idx  in range(len(blocks)):
             blocks[idx].mix(key_list[idx])
 
+        return cls.mixblock(blocks,key_list[-1])
+
     @classmethod
     def un_mix_blocks(cls, blocks, key_list):
+        
         for idx  in range(len(blocks)):
             blocks[idx].un_mix(key_list[idx])
+
+        return cls.unmixblock(blocks,key_list[-1])
 
     @classmethod
     def string_bit_shift(cls,string,dict_1, dict_2,shift_num):
@@ -349,4 +355,43 @@ class Block_Enc:
         new_string += string[:shift_num]
         return new_string
         
+    @classmethod
+    def mixblock(cls,blocks,key):
+        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
+        aux_list = blocks[:]
 
+        for idx in range(len(blocks)):
+            aux_list[idx] = blocks[row_shifts[idx]]
+        
+        return aux_list
+
+    @classmethod
+    def unmixblock(cls,blocks,key):
+        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
+
+        aux_list = blocks[:]
+
+        for idx in range(len(blocks)):
+            aux_list[row_shifts[idx]] = blocks[idx] 
+
+        return aux_list
+        
+# txt = "ali ishere"
+# key = 'ls'
+
+# def func(txt,key):
+#     dict1,dict2 = Enc.get_dicts(key)
+#     new_txt = ''
+#     for char in txt:
+#         new_txt += bin(dict2[char])[2:]
+#     return new_txt
+
+# x =func(txt,key)
+# print(x)
+# print(Enc.un_shuffle(Enc.shuffle(x,key),key))
+# x = [0,1,2,3,4,5,6,7,8,9]
+# key = Enc.convert_to_hash("adsada")
+# x= Block_Enc.mixblock(x,key)
+# print(x)
+# x = Block_Enc.unmixblock(x,key)
+# print(x)
