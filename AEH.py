@@ -11,7 +11,7 @@ class AE:
     def Encrypt(cls, text, key):
         hashed_key = Enc.convert_to_hash(key)
         len_text = len(text)
-        num_list = Enc.generate_keylist(len_text * 1.5, hashed_key)
+        num_list = Enc.generate_keylist(len_text * 1.5 * (len_text % 10), hashed_key)
         encoded = ''
         dict1, dict2 = Enc.get_dicts(hashed_key)
 
@@ -26,7 +26,7 @@ class AE:
     def Decrypt(cls, endcoded, key):
         len_text = len(endcoded)
         hashed_key = Enc.convert_to_hash(key)
-        num_list = Enc.generate_keylist(len_text * 1.5, hashed_key)
+        num_list = Enc.generate_keylist(len_text * 1.5* (len_text%10) , hashed_key)
         decoded = ''
         dict1, dict2 = Enc.get_dicts(hashed_key)
 
@@ -94,7 +94,7 @@ class AE:
         key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
 
         blocks = Block_Enc.split_to_parts(text,64)
-        Block_Enc.mix_blocks(blocks,key_list)
+        blocks = Block_Enc.mix_blocks(blocks,key_list)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         for idx in range(len(blocks)):
@@ -122,7 +122,7 @@ class AE:
         for idx in range(len(blocks)):
             blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2, False)
 
-        Block_Enc.un_mix_blocks(blocks, key_list)
+        blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key))
 
@@ -130,3 +130,24 @@ class AE:
             result.pop()
         
         return "".join(result)
+
+    @classmethod
+    def block_encryption_rounds(cls,text,key,rounds=6):
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        temp = text
+
+        for idx in range(len(key_list)):
+            temp = cls.Block_Encryption(temp,key_list[idx])
+
+        
+        return temp
+
+    @classmethod
+    def block_decryption_rounds(cls,text,key,rounds=6):
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        temp = text
+
+        for idx in range(len(key_list)):
+            temp = cls.Block_Decryption(temp,key_list[len(key_list)-1-idx])
+        
+        return temp
