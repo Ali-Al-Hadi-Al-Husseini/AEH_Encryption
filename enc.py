@@ -178,6 +178,31 @@ class Enc:
 
         return new_nums
 
+    @classmethod
+    def xor_and_convert_to_bin(cls,txt,key):
+        dict1,dict2 = cls.get_dicts(key)
+        new_key = ''
+        new_txt = ''
+
+        for char in key:
+            temp = bin(dict2[char])[2:]  
+            while len(temp) < 8:
+                temp = '0' + temp
+            new_key +=  temp    
+        
+        for char in txt:
+            temp = bin(dict2[char])[2:]  
+            while len(temp) < 8:
+                temp = '0' + temp
+            new_txt +=  temp    
+
+        final = ''
+        for idx in range(len(new_txt)):
+            final += '1' if new_txt[idx] == new_key[idx] else "0"
+
+        shuffled_bytes = Block_Enc.split_to_parts(new_txt,8)
+        return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
+
 
     @classmethod
     def shuffle(cls, txt, key):
@@ -210,9 +235,11 @@ class Enc:
     def shuffle_bin(cls,txt,key):
         temp = txt 
         keys = list(cls.create_list(key,(64)*4))
-        
+
         for idx in range(len(keys)):
             temp = cls.shuffle_helper(temp,keys[idx])
+            temp = cls.xor_and_convert_to_bin(temp,keys[idx])
+
         return temp
 
     @classmethod
@@ -221,7 +248,11 @@ class Enc:
         keys = list(cls.create_list(key,(64)*4))
 
         for idx in range(len(keys)):
+            temp = cls.xor_and_convert_to_bin(temp,keys[len(keys)-1-idx])
             temp = cls.un_shuffle_helper(temp,keys[len(keys)-1-idx])
+
+            
+
         return temp
 
     @classmethod
@@ -376,22 +407,4 @@ class Block_Enc:
 
         return aux_list
         
-# txt = "ali ishere"
-# key = 'ls'
 
-# def func(txt,key):
-#     dict1,dict2 = Enc.get_dicts(key)
-#     new_txt = ''
-#     for char in txt:
-#         new_txt += bin(dict2[char])[2:]
-#     return new_txt
-
-# x =func(txt,key)
-# print(x)
-# print(Enc.un_shuffle(Enc.shuffle(x,key),key))
-# x = [0,1,2,3,4,5,6,7,8,9]
-# key = Enc.convert_to_hash("adsada")
-# x= Block_Enc.mixblock(x,key)
-# print(x)
-# x = Block_Enc.unmixblock(x,key)
-# print(x)
