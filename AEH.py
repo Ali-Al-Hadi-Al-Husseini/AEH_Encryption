@@ -11,7 +11,7 @@ class AE:
     def Encrypt(cls, text, key):
         hashed_key = Enc.convert_to_hash(key)
         len_text = len(text)
-        num_list = Enc.generate_keylist(len_text * 1.5 * (len_text % 10), hashed_key)
+        num_list = Enc.generate_keylist(len_text * 3 * (len_text % 10+1), hashed_key)
         encoded = ''
         dict1, dict2 = Enc.get_dicts(hashed_key)
 
@@ -26,7 +26,7 @@ class AE:
     def Decrypt(cls, endcoded, key):
         len_text = len(endcoded)
         hashed_key = Enc.convert_to_hash(key)
-        num_list = Enc.generate_keylist(len_text * 1.5* (len_text%10) , hashed_key)
+        num_list = Enc.generate_keylist(len_text * 3 * (len_text%10 + 1) , hashed_key)
         decoded = ''
         dict1, dict2 = Enc.get_dicts(hashed_key)
 
@@ -97,8 +97,7 @@ class AE:
         blocks = Block_Enc.mix_blocks(blocks,key_list)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
-        for idx in range(len(blocks)):
-            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2)
+        Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
 
         
         result = list(Block_Enc.connect_blocks(blocks))
@@ -119,8 +118,7 @@ class AE:
         blocks = Block_Enc.split_to_parts(text,64)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
-        for idx in range(len(blocks)):
-            blocks[idx].bytes = Block_Enc.xor_str(blocks[idx].bytes, key_list[idx],dict_1, dict_2, False)
+        Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
 
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
