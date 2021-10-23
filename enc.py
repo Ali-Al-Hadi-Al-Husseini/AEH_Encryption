@@ -351,11 +351,11 @@ class Block_Enc:
 
     @classmethod
     def un_mix_blocks(cls, blocks, key_list):
-        
+        blocks = cls.unmixblock(blocks,key_list[-1])
         for idx  in range(len(blocks)):
             blocks[idx].un_mix(key_list[idx])
 
-        return cls.unmixblock(blocks,key_list[-1])
+        return blocks
 
     @classmethod
     def string_bit_shift(cls,string,dict_1, dict_2,shift_num):
@@ -399,7 +399,6 @@ class Block_Enc:
     @classmethod
     def unmixblock(cls,blocks,key):
         row_shifts = Enc.generate_shuffle_list(len(blocks), key)
-
         aux_list = blocks[:]
 
         for idx in range(len(blocks)):
