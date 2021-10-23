@@ -1,5 +1,5 @@
 from hashlib import new, sha256
-
+from threading import Thread
 
 class Enc:
 
@@ -178,31 +178,6 @@ class Enc:
 
         return new_nums
 
-    @classmethod
-    def xor_and_convert_to_bin(cls,txt,key):
-        dict1,dict2 = cls.get_dicts(key)
-        new_key = ''
-        new_txt = ''
-
-        for char in key:
-            temp = bin(dict2[char])[2:]  
-            while len(temp) < 8:
-                temp = '0' + temp
-            new_key +=  temp    
-        
-        for char in txt:
-            temp = bin(dict2[char])[2:]  
-            while len(temp) < 8:
-                temp = '0' + temp
-            new_txt +=  temp    
-
-        final = ''
-        for idx in range(len(new_txt)):
-            final += '1' if new_txt[idx] == new_key[idx] else "0"
-
-        shuffled_bytes = Block_Enc.split_to_parts(new_txt,8)
-        return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
-
 
     @classmethod
     def shuffle(cls, txt, key):
@@ -235,11 +210,9 @@ class Enc:
     def shuffle_bin(cls,txt,key):
         temp = txt 
         keys = list(cls.create_list(key,(64)*4))
-
+        
         for idx in range(len(keys)):
             temp = cls.shuffle_helper(temp,keys[idx])
-            temp = cls.xor_and_convert_to_bin(temp,keys[idx])
-
         return temp
 
     @classmethod
@@ -248,11 +221,7 @@ class Enc:
         keys = list(cls.create_list(key,(64)*4))
 
         for idx in range(len(keys)):
-            temp = cls.xor_and_convert_to_bin(temp,keys[len(keys)-1-idx])
             temp = cls.un_shuffle_helper(temp,keys[len(keys)-1-idx])
-
-            
-
         return temp
 
     @classmethod
@@ -290,6 +259,9 @@ class Block:
     
     def un_mix(self,key):
         self.bytes = Enc.un_shuffle_bin(self.bytes,key)
+    
+    def __len__(self):
+        return len(self.bytes)
 
 
 class Block_Enc: 
@@ -320,40 +292,58 @@ class Block_Enc:
         return result
 
     @classmethod
-    def xor_str(cls,str_1, str_2,dict_1, dict_2,enc=True):
+    def xor_str(cls,block, key,dict_1, dict_2,enc=True):
         new_str = ""
         shift_num = 0
-        for char in str_2:
+        for char in key:
             shift_num += dict_2[char]
 
         shift_num %= 64
         if enc:
-            str_1 = Enc.shuffle(str_1,str_2)
+            str_1 = Enc.shuffle(block.bytes,key)
             str_1 = cls.string_bit_shift(str_1,dict_1,dict_2, shift_num)
 
-            for char_1,char_2 in zip(str_1, str_2):
+            for char_1,char_2 in zip(str_1, key):
                 new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
         else :
-            for char_1,char_2 in zip(str_1, str_2):
+            for char_1,char_2 in zip(block.bytes, key):
                 new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
             
             new_str = cls.string_bit_shift(new_str,dict_1,dict_2, -shift_num)
-            new_str = Enc.un_shuffle(new_str,str_2)
-        # str_1.bytes = new_str
-        return new_str
+            new_str = Enc.un_shuffle(new_str,key)
+            
+        # block.bytes = new_str
+
     @classmethod
     def mix_blocks(cls, blocks, key_list):
-
+        threads = []
         for idx  in range(len(blocks)):
-            blocks[idx].mix(key_list[idx])
+            thread = Thread(target=blocks[idx].mix,args=(key_list[idx],))
+            thread.daemon = True
+            threads.append(thread)
+        
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
 
         return cls.mixblock(blocks,key_list[-1])
 
     @classmethod
     def un_mix_blocks(cls, blocks, key_list):
+        threads = []
         blocks = cls.unmixblock(blocks,key_list[-1])
         for idx  in range(len(blocks)):
-            blocks[idx].un_mix(key_list[idx])
+            thread = Thread(target=blocks[idx].un_mix,args=(key_list[idx],))
+            thread.daemon = True
+            threads.append(thread)
+            
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
 
         return blocks
 
@@ -399,11 +389,45 @@ class Block_Enc:
     @classmethod
     def unmixblock(cls,blocks,key):
         row_shifts = Enc.generate_shuffle_list(len(blocks), key)
+
         aux_list = blocks[:]
 
         for idx in range(len(blocks)):
             aux_list[row_shifts[idx]] = blocks[idx] 
 
         return aux_list
-        
 
+    @classmethod
+    def xor_blocks(cls,blocks,key_list,dict1,dict2,enc=True):
+        threads = []
+        for idx  in range(len(blocks)):
+            thread = Thread(target=cls.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2,enc))
+            thread.daemon = True
+            threads.append(thread)
+        
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+
+
+# txt = "ali ishere"
+# key = 'ls'
+
+# def func(txt,key):
+#     dict1,dict2 = Enc.get_dicts(key)
+#     new_txt = ''
+#     for char in txt:
+#         new_txt += bin(dict2[char])[2:]
+#     return new_txt
+
+# x =func(txt,key)
+# print(x)
+# print(Enc.un_shuffle(Enc.shuffle(x,key),key))
+# x = [0,1,2,3,4,5,6,7,8,9]
+# key = Enc.convert_to_hash("adsada")
+# x= Block_Enc.mixblock(x,key)
+# print(x)
+# x = Block_Enc.unmixblock(x,key)
+# print(x)
