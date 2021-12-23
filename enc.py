@@ -1,6 +1,6 @@
 from hashlib import new, sha256
 from threading import Thread
-
+from multiprocessing import Process
 class Enc:
 
     # creater a string that is as the size of the file from hashes using sha256
@@ -316,34 +316,29 @@ class Block_Enc:
 
     @classmethod
     def mix_blocks(cls, blocks, key_list):
-        threads = []
+        processs = []
         for idx  in range(len(blocks)):
-            thread = Thread(target=blocks[idx].mix,args=(key_list[idx],))
-            thread.daemon = True
-            threads.append(thread)
+            process = Process(target=blocks[idx].mix,args=(key_list[idx],))
+            process.start()
+            processs.append(process)
         
-        for thread in threads:
-            thread.start()
-
-        for thread in threads:
-            thread.join()
+        for process in processs:
+            process.join()
 
         return cls.mixblock(blocks,key_list[-1])
 
     @classmethod
     def un_mix_blocks(cls, blocks, key_list):
-        threads = []
+        processs = []
         blocks = cls.unmixblock(blocks,key_list[-1])
         for idx  in range(len(blocks)):
-            thread = Thread(target=blocks[idx].un_mix,args=(key_list[idx],))
-            thread.daemon = True
-            threads.append(thread)
+            process = Process(target=blocks[idx].mix,args=(key_list[idx],))
+            process.start()
+            processs.append(process)
             
-        for thread in threads:
-            thread.start()
 
-        for thread in threads:
-            thread.join()
+        for process in processs:
+            process.join()
 
         return blocks
 
