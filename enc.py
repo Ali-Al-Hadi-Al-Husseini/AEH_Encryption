@@ -5,21 +5,21 @@ class Enc:
 
     # creater a string that is as the size of the file from hashes using sha256
     @classmethod
-    def create_list(cls, Key, size):
+    def create_list(cls, Key, size,add_to_half = 1):
         if size <= 64:
             new_key = [Key]
             return new_key
 
         else:
             new_keys = []
-            new_list = cls.create_new_list(cls.create_list(Key, (size // 2)))
+            new_list = cls.create_new_list(cls.create_list(Key, (size // 2),add_to_half))
             new_keys.extend(new_list)
             return new_keys
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
-    def split_and_hash(cls, key):
-        half_key = int(len(key) / 2) + 1
+    def split_and_hash(cls, key,add_to_half = 1):
+        half_key = int(len(key) / 2) + add_to_half
         return list((sha256(key[half_key:].encode()).hexdigest(), sha256(key[:half_key].encode()).hexdigest()))
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
@@ -33,8 +33,8 @@ class Enc:
 
     # write the  generated list from create_new_list in a file called keys.txt
     @classmethod
-    def create_hash_list(cls, key, size):
-        keys_list = cls.create_list(key, size * 5)
+    def create_hash_list(cls, key, size,add_to_half = 1):
+        keys_list = cls.create_list(key, size * 5,add_to_half)
         result = ""
         for key in keys_list:
             result += key
@@ -43,8 +43,8 @@ class Enc:
     """ takes the size of the text that to be encrypted  and takes the key to genrate the file (keys.txt) using the class
      method create_hash_list adn then take  the  series of hashes and pass it to the nums classmethod"""
     @classmethod
-    def generate_keylist(cls, txt_size, key,case="NONE"):
-        key = cls.create_hash_list(key, txt_size)
+    def generate_keylist(cls, txt_size, key, add_to_half = 1,case="NONE"):
+        key = cls.create_hash_list(key, txt_size,add_to_half)
         num_list = []
 
         for idx in range(1, int(len(key) // 5) + 1):
@@ -134,8 +134,9 @@ class Enc:
         return new_character_list
 
     @classmethod
-    def get_dicts(cls, key):
-        character_list = cls.generate_character_list(key)
+    def get_dicts(cls, key,character_list = None):
+        if character_list is None:
+            character_list = cls.generate_character_list(key)
         dict1 = cls.convert_to_dict(character_list)
         dict2 = cls.reverse_dict(dict1)
 
