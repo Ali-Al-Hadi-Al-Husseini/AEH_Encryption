@@ -1,4 +1,5 @@
 from enc import Enc , Block_Enc
+from random import randrange
 
 class AE:
     # encrypts the text that was given
@@ -8,12 +9,12 @@ class AE:
         self.key = Enc.convert_to_hash(key)
 
     @classmethod
-    def Encrypt(cls, text, key):
+    def Encrypt(cls, text, key,add_to_half= 1,character_list = None):
         hashed_key = Enc.convert_to_hash(key)
         len_text = len(text)
-        num_list = Enc.generate_keylist(len_text * 3 * (len_text % 10+1), hashed_key)
+        num_list = Enc.generate_keylist(len_text * 3 * (len_text % 10+1), hashed_key,add_to_half)
         encoded = ''
-        dict1, dict2 = Enc.get_dicts(hashed_key)
+        dict1, dict2 = Enc.get_dicts(hashed_key,character_list)
 
         for idx in range(len_text):
             temp_num = dict2[text[idx]] + num_list[idx]
@@ -23,12 +24,12 @@ class AE:
         return encoded
 
     @classmethod
-    def Decrypt(cls, endcoded, key):
+    def Decrypt(cls, endcoded, key,add_to_half= 1,character_list = None):
         len_text = len(endcoded)
         hashed_key = Enc.convert_to_hash(key)
-        num_list = Enc.generate_keylist(len_text * 3 * (len_text%10 + 1) , hashed_key)
+        num_list = Enc.generate_keylist(len_text * 3 * (len_text%10 + 1) , hashed_key,add_to_half)
         decoded = ''
-        dict1, dict2 = Enc.get_dicts(hashed_key)
+        dict1, dict2 = Enc.get_dicts(hashed_key,character_list)
 
         for idx in range(len_text):
             temp_num = (dict2[endcoded[idx]] - num_list[idx]) % len(dict1.keys())
@@ -98,7 +99,7 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
-
+        print(key_list)
         
         result = list(Block_Enc.connect_blocks(blocks))
 
@@ -115,6 +116,7 @@ class AE:
         un_joind = Enc.create_hash_list(hashed_key, size)
         key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
 
+        
         blocks = Block_Enc.split_to_parts(text,64)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
@@ -149,3 +151,68 @@ class AE:
             temp = cls.Block_Decryption(temp,key_list[len(key_list)-1-idx])
         
         return temp
+
+    #TODO
+    @classmethod
+    def professional_encryption(cls,text: str,key: str,add_to_hash_half: int):
+        if len(key) < 64 : 
+            print("Key is to Short")
+            return None, None
+
+        if 0 > add_to_hash_half > (len(key) // 4): 
+            print("add to hash half number should be between 1 and the length of the key divided by 4")
+            return None, None
+
+        if len(text) % 64 != 0:
+            for i in range(64 - (len(text) % 64)):
+                text+= "%"
+
+        size = len(text) +((len(text) % 64) - 64 )
+        hashed_key = Enc.convert_to_hash(key)
+
+        
+        un_joind = Enc.create_hash_list(hashed_key, size,add_to_hash_half)
+        key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
+        character_list = Enc.shuffle(Enc.get_character_list(),key_list[randrange(0,len(key_list))])
+
+        text = cls.Encrypt(text, key, add_to_hash_half, character_list)
+
+        blocks = Block_Enc.split_to_parts(text,64)
+        blocks = Block_Enc.mix_blocks(blocks,key_list)
+        dict_1, dict_2 = Enc.get_dicts(hashed_key,character_list)
+
+        Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
+
+        
+        result = list(Block_Enc.connect_blocks(blocks))
+
+        while result[-1] == "%":
+            result.pop()
+
+        return "".join(result), character_list
+
+    @classmethod
+    def professional_decryption(cls,text: str,key: str,add_to_hash_half: int,character_list: list):
+        if 0 > add_to_hash_half > (len(key) // 4): 
+            print("add to hash half number should be between 1 and the length on the key divided by 4")
+
+        size = len(text) +((len(text) % 64) - 64 )
+        hashed_key = Enc.convert_to_hash(key)
+
+        un_joind = Enc.create_hash_list(hashed_key, size, add_to_hash_half)
+        key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
+
+        
+        blocks = Block_Enc.split_to_parts(text,64)
+        dict_1, dict_2 = Enc.get_dicts(hashed_key,character_list)
+
+        Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
+
+        blocks = Block_Enc.un_mix_blocks(blocks, key_list)
+        result = list(Block_Enc.connect_blocks(blocks))
+        result = list(cls.Decrypt(result,key,add_to_hash_half,character_list))
+
+        while result[-1] == "%":
+            result.pop()
+        
+        return "".join(result)
