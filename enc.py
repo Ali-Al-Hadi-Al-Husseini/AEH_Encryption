@@ -317,6 +317,22 @@ class Block_Enc:
 
     @classmethod
     def mix_blocks(cls, blocks, key_list):
+
+        for idx  in range(len(blocks)):
+            blocks[idx].mix(key_list[idx])
+
+        return cls.mixblock(blocks,key_list[-1])
+
+    @classmethod
+    def un_mix_blocks(cls, blocks, key_list):
+        blocks = cls.unmixblock(blocks,key_list[-1])
+        for idx  in range(len(blocks)):
+            blocks[idx].un_mix(key_list[idx])
+
+        return blocks
+
+    @classmethod
+    def mix_blocks_process(cls, blocks, key_list):
         processs = []
         for idx  in range(len(blocks)):
             process = Process(target=blocks[idx].mix,args=(key_list[idx],))
@@ -329,7 +345,7 @@ class Block_Enc:
         return cls.mixblock(blocks,key_list[-1])
 
     @classmethod
-    def un_mix_blocks(cls, blocks, key_list):
+    def un_mix_blocks_process(cls, blocks, key_list):
         processs = []
         blocks = cls.unmixblock(blocks,key_list[-1])
         for idx  in range(len(blocks)):
