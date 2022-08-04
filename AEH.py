@@ -216,3 +216,24 @@ class AE:
             result.pop()
         
         return "".join(result)
+
+    @classmethod
+    def professional_block_encryption_rounds(cls,text: str,key: str,add_to_hash_half: int,rounds=6):
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        temp = text
+
+        for idx in range(len(key_list)):
+            temp = cls.professional_encryption(temp,key_list[idx],add_to_hash_half)
+
+        
+        return temp
+
+    @classmethod
+    def professional_block_decryption_rounds(cls,text: str,key: str,add_to_hash_half: int,character_list: list,rounds=6):
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        temp = text
+
+        for idx in range(len(key_list)):
+            temp = cls.professional_decryption(temp,key_list[len(key_list)-1-idx],add_to_hash_half,character_list)
+        
+        return temp
