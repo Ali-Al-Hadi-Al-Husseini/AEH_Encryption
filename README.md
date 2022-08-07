@@ -1,5 +1,5 @@
 # AEH Encryption
-AEH is a new Encryption algorithm founded by Ali Al Hadi
+AEH is a new Encryption algorithm founded by Ali Al Hadi. To Test AEH fork it on [replit](https://replit.com/@Ali-Al-Hadi-Al-Husseini/AEH-encryption#main.py) and uncomment the code
 
 
 ## Usage
