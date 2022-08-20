@@ -1,6 +1,7 @@
 from hashlib import new, sha256
 from threading import Thread
 from multiprocessing import Process
+
 class Enc:
 
     # creater a string that is as the size of the file from hashes using sha256
