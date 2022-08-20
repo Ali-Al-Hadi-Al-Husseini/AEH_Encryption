@@ -1,12 +1,12 @@
 from hashlib import new, sha256
 from threading import Thread
 from multiprocessing import Process
-
-cdef class Enc:
+import cython
+class Enc:
 
     # creater a string that is as the size of the file from hashes using sha256
     @classmethod
-    cdef  list create_list(cls, char* Key, int size, int add_to_half = 1):
+    def  create_list(cls, str Key, int size, int add_to_half = 1):
         if size <= 64:
             new_key = [Key]
             return new_key
@@ -19,7 +19,7 @@ cdef class Enc:
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
-    cdef  list split_and_hash(cls,char*  key, int add_to_half = 1):
+    def  split_and_hash(cls,char*  key, int add_to_half = 1):
         cdef int half_key = int(len(key) / 2) + add_to_half
         return list((sha256(key[half_key:].encode()).hexdigest(), sha256(key[:half_key].encode()).hexdigest()))
 
@@ -44,7 +44,7 @@ cdef class Enc:
     """ takes the size of the text that to be encrypted  and takes the key to genrate the file (keys.txt) using the class
      method create_hash_list adn then take  the  series of hashes and pass it to the nums classmethod"""
     @classmethod
-    cdef  int[:] generate_keylist(cls, int txt_size, char* key, int  add_to_half = 1, char* case="NONE"):
+    def generate_keylist(cls, int txt_size, char* key, int  add_to_half = 1, char* case="NONE"):
         key = cls.create_hash_list(key, txt_size,add_to_half)
         cdef int num_list[int(len(key) // 5) + 1]
         
@@ -60,7 +60,7 @@ cdef class Enc:
 
     """ takes  a list of len 5 and genrate a number from it to pass it back to  generate_keylist """
     @classmethod
-    cdef int generate_nums(cls,int[] temp_list, char* Case='NONE'):
+    def  generate_nums(cls,int[] temp_list, char* Case='NONE'):
         # checks to see if ther are any letter in the list and then change it to numbers
         for idx in range(len(temp_list)):
             if type(temp_list[idx]) == str:
@@ -122,15 +122,18 @@ cdef class Enc:
     """take a key and generates a new list with different order  of the letters (changes the index of each letter and give a new_list)
     which means every key have different order of letter which makes it a bit harder to crack it """
     @classmethod
-    cdef char*[] def generate_character_list(cls, char* key):
-        cdef char*[] character_list = cls.get_character_list()
+    def  generate_character_list(cls, char* key):
+        character_list = cls.get_character_list()
+        cdef int keys_size = int(len(key) // 5) + 1
+        cdef int[256] new_character_list 
+        cdef int[keys_size] keys = cls.generate_keylist(len(character_list), key,'A')
 
-        new_character_list = []
-        cdef int[int(len(key) // 5) + 1] keys = cls.generate_keylist(len(character_list), key,'A')
+        cdef int len_char_list = len(character_list)
 
         for idx in range(len(character_list)):
-            new_character_list.append(character_list.pop(
-                keys[idx] % len(character_list)))
+            new_character_list.append(character_list[(
+                keys[idx] % len_char_list)])
+            len_char_list -= 1
 
         return new_character_list
 
@@ -144,7 +147,8 @@ cdef class Enc:
         return dict1, dict2
 
     @classmethod
-    cdef char*[] get_character_list(cls):
+    @cython.returns(cython.int)
+    def get_character_list(cls):
         return ["'", '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
                 '5', '6','7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E',
                 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
@@ -163,15 +167,18 @@ cdef class Enc:
                 , 'ϡ', 'Ϣ', 'ϣ', 'Ϥ', 'ϥ', 'Ϧ', 'ϧ','Ɗ', 'Ƌ', 'ƌ', 'ƍ', 'Ǝ', 'Ə', 'Ɛ', 'Ɠ', '~']
     
     @classmethod
-    def char* convert_to_hash(cls,char* txt):
+    @cython.returns(cython.str)
+    @cython.returns(txt="char*")
+    def convert_to_hash(cls,txt):
         return sha256(txt.encode()).hexdigest()
 
     @classmethod
-    def generate_shuffle_list(cls,int len_txt,char*key):
+    def generate_shuffle_list(cls,int len_txt,str key):
         cdef int[len_txt] new_nums 
         nums = []
+        cdef int len_num = int(len(key) // 5) + 1
         cdef int[len_txt] temp_num = list(range(len_txt))
-        cdef int[int(len(key) // 5) + 1] nums = cls.generate_keylist(len_txt, key)
+        cdef int[len_num] nums = cls.generate_keylist(len_txt, key)
 
         for idx in range(len_txt):
             try:
@@ -183,9 +190,12 @@ cdef class Enc:
 
 
     @classmethod
-    def char* shuffle(cls, char* txt,char* key):
+    @cython.returns(cython.int)
+    @cython.locals(data="char*",)
+    cdef str shuffle(cls, char* txt,char* key):
         new_txt = ''
-        cdef int[int(len(key) // 5) + 1] row_shifts = cls.generate_shuffle_list(len(txt), key)
+        cdef int len_num = int(len(key) // 5) + 1
+        cdef int[len_num] row_shifts = cls.generate_shuffle_list(len(txt), key)
         
         for idx in range(len(txt)):
             new_txt += txt[row_shifts[idx]]
@@ -193,8 +203,9 @@ cdef class Enc:
         return new_txt
 
     @classmethod
-    def un_shuffle(cls, txt, key):
-        cdef int[int(len(key) // 5) + 1] shifts = cls.generate_shuffle_list(len(txt), key)
+    cdef str un_shuffle(cls,str txt,str key):
+        cdef int len_num = int(len(key) // 5) + 1
+        cdef int[len_num] shifts = cls.generate_shuffle_list(len(txt), key)
         cdef int[len(txt)]new_list = ['' for charr in txt]
 
         for idx in range(len(shifts)):
@@ -204,13 +215,13 @@ cdef class Enc:
         
 
     @classmethod
-    cdef char* convert_to_str(cls,char*[] listt):
+    cdef str convert_to_str(cls,str[] listt):
         return "".join(listt)
 
     @classmethod
-    def shuffle_bin(cls,txt,key):
-        temp = txt 
-        keys = list(cls.create_list(key,(64)*4))
+    cdef str shuffle_bin(cls,str txt,str key):
+        cdef str temp = txt 
+        cdef list keys = list(cls.create_list(key,(64)*4))
         
         for idx in range(len(keys)):
             temp = cls.shuffle_helper(temp,keys[idx])
@@ -226,9 +237,10 @@ cdef class Enc:
         return temp
 
     @classmethod
-    def shuffle_helper(cls,txt,key):
+    cdef str shuffle_helper(cls,str txt,str key):
         dict1,dict2 = cls.get_dicts(key)
-        new_txt = ''
+        cdef str new_txt = ''
+
         for char in txt:
             temp = bin(dict2[char])[2:]  
             while len(temp) < 8:
