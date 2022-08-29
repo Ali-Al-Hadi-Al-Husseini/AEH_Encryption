@@ -270,6 +270,8 @@ class Block_Enc:
 
     @classmethod
     def split_to_parts(cls, text,block_size = 16):
+        if block_size > len(text):
+            raise ValueError("blocksize bigger than text length")
         blocks = []
         last_idx = 0
         for idx in range(len(text) // block_size):
@@ -277,7 +279,7 @@ class Block_Enc:
             blocks.append(Block(splitted_txt))
             last_idx = idx
 
-        txt =text[(last_idx + 1) * block_size + 1:]
+        txt =text[(last_idx + 1) * block_size:]
 
         if txt != '':
             last_block  = Block(txt)
