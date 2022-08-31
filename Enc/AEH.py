@@ -1,3 +1,4 @@
+from msilib.schema import Error
 from enc import Enc , Block_Enc
 from random import randrange
 
@@ -99,7 +100,7 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
-        print(key_list)
+        
         
         result = list(Block_Enc.connect_blocks(blocks))
 
@@ -156,12 +157,10 @@ class AE:
     @classmethod
     def professional_encryption(cls,text: str,key: str,add_to_hash_half: int):
         if len(key) < 64 : 
-            print("Key is to Short")
-            return None, None
+            raise ValueError("Key is to Short")
 
         if 0 > add_to_hash_half > (len(key) // 4): 
-            print("add to hash half number should be between 1 and the length of the key divided by 4")
-            return None, None
+            raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
 
         if len(text) % 64 != 0:
             for i in range(64 - (len(text) % 64)):
@@ -194,7 +193,7 @@ class AE:
     @classmethod
     def professional_decryption(cls,text: str,key: str,add_to_hash_half: int,character_list: list):
         if 0 > add_to_hash_half > (len(key) // 4): 
-            print("add to hash half number should be between 1 and the length on the key divided by 4")
+            raise ValueError("add to hash half number should be between 1 and the length on the key divided by 4")
 
         size = len(text) +((len(text) % 64) - 64 )
         hashed_key = Enc.convert_to_hash(key)

@@ -271,7 +271,10 @@ class Block_Enc:
     @classmethod
     def split_to_parts(cls, text,block_size = 16):
         if block_size > len(text):
-            raise ValueError("blocksize bigger than text length")
+            for _ in range( block_size - len(text)):
+                text += '%'
+
+
         blocks = []
         last_idx = 0
         for idx in range(len(text) // block_size):
@@ -282,7 +285,8 @@ class Block_Enc:
         txt =text[(last_idx + 1) * block_size:]
 
         if txt != '':
-            last_block  = Block(txt)
+            to_be_added = ''.join(['%' for _ in range(block_size-len(txt))])
+            last_block  = Block(txt + to_be_added)
             blocks.append(last_block)
 
         return blocks
@@ -296,27 +300,17 @@ class Block_Enc:
         return result
 
     @classmethod
-    def xor_str(cls,block, key,dict_1, dict_2,enc=True):
-        new_str = ""
-        shift_num = 0
-        for char in key:
-            shift_num += dict_2[char]
-
-        shift_num %= 64
-        if enc:
-            str_1 = Enc.shuffle(block.bytes,key)
-            str_1 = cls.string_bit_shift(str_1,dict_1,dict_2, shift_num)
-
-            for char_1,char_2 in zip(str_1, key):
-                new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
-        else :
-            for char_1,char_2 in zip(block.bytes, key):
-                new_str += (dict_1[( dict_2[char_1] ^ dict_2[char_2] )])
-            
-            new_str = cls.string_bit_shift(new_str,dict_1,dict_2, -shift_num)
-            new_str = Enc.un_shuffle(new_str,key)
-            
-        # block.bytes = new_str
+    def xor_str(cls,block, key,d1, d2):
+        txt = block.bytes
+        if len(txt) != len(key):
+            raise ValueError('Text and key should be the same length in xor_str')
+        res = [None for _ in txt]
+        j = 0
+        for idx in range(len(txt)):
+            res[j] = d1[ d2[txt[idx]] ^ d2[key[idx]]]
+            j += 1
+    
+        block.bytes =  ''.join(res)
 
     @classmethod
     def mix_blocks(cls, blocks, key_list):
@@ -416,7 +410,7 @@ class Block_Enc:
     def xor_blocks(cls,blocks,key_list,dict1,dict2,enc=True):
         threads = []
         for idx  in range(len(blocks)):
-            thread = Thread(target=cls.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2,enc))
+            thread = Thread(target=cls.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2))
             thread.daemon = True
             threads.append(thread)
         
