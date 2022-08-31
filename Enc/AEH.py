@@ -96,6 +96,8 @@ class AE:
         key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
 
         blocks = Block_Enc.split_to_parts(text,64)
+        #to speed up uncomment and use mix_blocks_process
+        # but you need to run under if __name__ == '__main__':
         blocks = Block_Enc.mix_blocks(blocks,key_list)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
@@ -122,7 +124,9 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
-
+        #to speed up uncomment and use unmix_blocks_process
+        # but you need to run under if __name__ == '__main__':
+        
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key))
@@ -177,9 +181,13 @@ class AE:
         text = cls.Encrypt(text, key, add_to_hash_half, character_list)
 
         blocks = Block_Enc.split_to_parts(text,64)
+        #to speed up up uncomment and use mix_blocks_process
+        # but you need to run under if __name__ == '__main__':
         blocks = Block_Enc.mix_blocks(blocks,key_list)
         dict_1, dict_2 = Enc.get_dicts(hashed_key,character_list)
 
+        # to speed up uncomment and use un_mix_blocks_process
+        # but you need to run under if __name__ == '__main__':
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
 
         
@@ -206,7 +214,8 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key,character_list)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
-
+        #to speed up use un_mix_blocks_process
+        # but you need to run under if __name__ == '__main__':
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key,add_to_hash_half,character_list))

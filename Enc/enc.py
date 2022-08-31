@@ -201,12 +201,8 @@ class Enc:
         
 
     @classmethod
-    def convert_to_str(cls,listt):
-        new_str = ''
-        for char in listt:
-            new_str+=char
-
-        return new_str
+    def convert_to_str(cls,chars_list):
+        return ''.join(chars_list)
 
     @classmethod
     def shuffle_bin(cls,txt,key):
@@ -272,7 +268,7 @@ class Block_Enc:
     def split_to_parts(cls, text,block_size = 16):
         blocks = []
         last_idx = 0
-        
+
         for idx in range(len(text) // block_size):
             splitted_txt = text[idx * block_size : (idx + 1 ) * block_size]
             blocks.append(Block(splitted_txt))
@@ -304,8 +300,10 @@ class Block_Enc:
         for idx in range(len(txt)):
             res[j] = d1[ d2[txt[idx]] ^ d2[key[idx]]]
             j += 1
-    
-        block.bytes =  ''.join(res)
+
+        result = ''.join(res)
+        block.bytes =  result 
+        return result
 
     @classmethod
     def mix_blocks(cls, blocks, key_list):
@@ -323,33 +321,33 @@ class Block_Enc:
 
         return blocks
 
-    @classmethod
-    def mix_blocks_process(cls, blocks, key_list):
-        processs = []
-        for idx  in range(len(blocks)):
-            process = Process(target=blocks[idx].mix,args=(key_list[idx],))
-            process.start()
-            processs.append(process)
+    # @classmethod
+    # def mix_blocks_process(cls, blocks, key_list):
+    #     processs = []
+    #     for idx  in range(len(blocks)):
+    #         process = Process(target=blocks[idx].mix,args=(key_list[idx],))
+    #         process.start()
+    #         processs.append(process)
         
-        for process in processs:
-            process.join()
+    #     for process in processs:
+    #         process.join()
 
-        return cls.mixblock(blocks,key_list[-1])
+    #     return cls.mixblock(blocks,key_list[-1])
 
-    @classmethod
-    def un_mix_blocks_process(cls, blocks, key_list):
-        processs = []
-        blocks = cls.unmixblock(blocks,key_list[-1])
-        for idx  in range(len(blocks)):
-            process = Process(target=blocks[idx].mix,args=(key_list[idx],))
-            process.start()
-            processs.append(process)
+    # @classmethod
+    # def un_mix_blocks_process(cls, blocks, key_list):
+    #     processs = []
+    #     blocks = cls.unmixblock(blocks,key_list[-1])
+    #     for idx  in range(len(blocks)):
+    #         process = Process(target=blocks[idx].mix,args=(key_list[idx],))
+    #         process.start()
+    #         processs.append(process)
             
 
-        for process in processs:
-            process.join()
+    #     for process in processs:
+    #         process.join()
 
-        return blocks
+    #     return blocks
 
     @classmethod
     def string_bit_shift(cls,string,dict_1, dict_2,shift_num):
@@ -402,36 +400,22 @@ class Block_Enc:
         return aux_list
 
     @classmethod
-    def xor_blocks(cls,blocks,key_list,dict1,dict2,enc=True):
-        threads = []
+    def xor_blocks(cls,blocks,key_list,dict1,dict2):
         for idx  in range(len(blocks)):
-            thread = Thread(target=cls.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2))
-            thread.daemon = True
-            threads.append(thread)
-        
-        for thread in threads:
-            thread.start()
+            cls.xor_str(blocks[idx],key_list[idx],dict1,dict2)
 
-        for thread in threads:
-            thread.join()
+    # @classmethod
+    # def xor_blocks_procsess(cls,blocks,key_list,dict1,dict2):
+    #     processs = []
+    #     for idx  in range(len(blocks)):
+    #         process = Process(target=cls.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2))
+    #         process.start()
+    #         processs.append(process)
+            
+
+    #     for process in processs:
+    #         process.join()
 
 
-# txt = "ali ishere"
-# key = 'ls'
 
-# def func(txt,key):
-#     dict1,dict2 = Enc.get_dicts(key)
-#     new_txt = ''
-#     for char in txt:
-#         new_txt += bin(dict2[char])[2:]
-#     return new_txt
 
-# x =func(txt,key)
-# print(x)
-# print(Enc.un_shuffle(Enc.shuffle(x,key),key))
-# x = [0,1,2,3,4,5,6,7,8,9]
-# key = Enc.convert_to_hash("adsada")
-# x= Block_Enc.mixblock(x,key)
-# print(x)
-# x = Block_Enc.unmixblock(x,key)
-# print(x)

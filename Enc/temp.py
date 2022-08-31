@@ -4,16 +4,16 @@ from enc import Block as b
 from enc import Enc as e
 
 # block = b("qwertyuiopasdfghjklzxcvbnm")
-key = "test_key_123_11"
-d1,d2 = e.get_dicts(e.convert_to_hash(key))
-t1 = "qwerty"
-t2 = "asdrty"
-chars = []
+# key = "test_key_123_11"
+# d1,d2 = e.get_dicts(e.convert_to_hash(key))
+# t1 = "qwerty"
+# t2 = "asdrty"
+# chars = []
 
-from AEH import AE
-en = AE.Block_Encryption('asdssadasdasdasdasddasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsasdasdasdasdsaada',key)
-print(en)
-print(AE.Block_Decryption(en,key))
+# from AEH import AE
+# en = AE.Block_Encryption('asdssadasdasdasdasddasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsasdasdasdasdsaada',key)
+# print(en)
+# print(AE.Block_Decryption(en,key))
 # x = ((bin(d2['n'])[2:]))
 # x1 = (((bin(d2['a'])[2:])))
 # nd= ''.join(['0' for _ in range(8-len(x))])
@@ -43,3 +43,8 @@ print(AE.Block_Decryption(en,key))
 # res = (func('abc','mnb',d1,d2))
 # print(res)
 # print((func(res,'mnb',d1,d2)))
+
+blocks = be.split_to_parts("sadasdasdasdasd",2)
+blocks_copy = blocks.copy()
+
+print(blocks is blocks_copy)

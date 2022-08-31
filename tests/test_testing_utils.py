@@ -1,5 +1,6 @@
 from .testing_utils import *
 from ..Enc.enc import Block as b
+from ..Enc.enc import Block_Enc as be
 import unittest
 
 
@@ -60,3 +61,13 @@ class TestTestingUtils(unittest.TestCase):
 
         for un_mixed,mixed in test_cases:
             self.assertFalse(same_but_mixed(un_mixed,mixed))
+
+    def test_copy_blocks(self):
+        txt = 'qwertyuiopasdfghjkl'
+        blocks = be.split_to_parts(txt,2)
+        blocks_copy = copy_blocks(blocks)
+
+        for idx in range(len(blocks)):
+            block = blocks[idx]
+            copy_block = blocks_copy[idx]
+            self.assertTrue(block is not copy_block and block.bytes == copy_block.bytes)

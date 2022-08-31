@@ -1,7 +1,8 @@
+from copy import copy
 from ..Enc.enc import  Block_Enc as be
 from ..Enc.enc import Block as b
 from ..Enc.enc import Enc as e
-from .testing_utils import same_but_mixed, same_but_splited, remove_modulo
+from .testing_utils import *
 import unittest
 
 
@@ -33,7 +34,7 @@ class TestBlockClass(unittest.TestCase):
             
             self.assertEqual(self.txt,connected_txt)
 
-    def test_xor_str(self):
+    def test_xor_str_success(self):
         test_cases = [
                 ("abcd","qwer"),
                 ('123456789','987654321'),
@@ -51,6 +52,38 @@ class TestBlockClass(unittest.TestCase):
 
             be.xor_str(block,key,self.dict1,self.dict2)
             self.assertEqual(block.bytes,text)
+
+    def test_xor_str_failure(self):
+        test_cases = [
+                ("abasdcd","qwer"),
+                ('1234567a89','987654asdas321'),
+                ('x',''),
+                ('h14g823h','0hmdqt7')
+    
+        ]       
+
+        for txt,key in test_cases:
+            with self.assertRaises(ValueError):
+                be.xor_str(b(txt),key,self.dict1,self.dict2)
+
+    def test_xor_block(self):
+        for i in range(1,3):
+            un_joind = e.create_hash_list(self.hash, len(self.txt) +((len(self.txt) % i) - i ))
+            key_list = ["".join(un_joind[idx * i : (idx +1) * i]) for idx in range(len(un_joind) // i)]
+            
+            blocks = be.split_to_parts(self.txt,i)
+            blocks_copy = copy_blocks(blocks)
+            be.xor_blocks(blocks_copy,key_list,self.dict1,self.dict2)
+
+            for idx in range(len(blocks)):
+                key = key_list[idx]
+                xored_block = blocks_copy[idx]
+                block = blocks[idx]
+
+                self.assertEqual(block.bytes,be.xor_str(xored_block,key,self.dict1,self.dict2))
+
+            
+
 
     def test_mix_blocks(self):
         # adding more cases would take much time
