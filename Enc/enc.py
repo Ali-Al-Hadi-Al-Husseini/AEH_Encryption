@@ -270,13 +270,9 @@ class Block_Enc:
 
     @classmethod
     def split_to_parts(cls, text,block_size = 16):
-        if block_size > len(text):
-            for _ in range( block_size - len(text)):
-                text += '%'
-
-
         blocks = []
         last_idx = 0
+        
         for idx in range(len(text) // block_size):
             splitted_txt = text[idx * block_size : (idx + 1 ) * block_size]
             blocks.append(Block(splitted_txt))
@@ -285,8 +281,7 @@ class Block_Enc:
         txt =text[(last_idx + 1) * block_size:]
 
         if txt != '':
-            to_be_added = ''.join(['%' for _ in range(block_size-len(txt))])
-            last_block  = Block(txt + to_be_added)
+            last_block  = Block(txt )
             blocks.append(last_block)
 
         return blocks
