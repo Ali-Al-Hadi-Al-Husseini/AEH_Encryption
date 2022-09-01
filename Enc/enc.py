@@ -357,6 +357,7 @@ class Block_Enc:
 
     @classmethod
     def string_un_shift(cls,string,shift_num):
+        shift_num %= len(string) if len(string) > 0 else 1
         unshifted_string = string[shift_num:]
         unshifted_string += string[:shift_num]
         return unshifted_string

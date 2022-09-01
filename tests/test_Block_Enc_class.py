@@ -119,6 +119,18 @@ class TestBlockClass(unittest.TestCase):
         for txt,shift,result in test_cases:
             self.assertEqual(be.string_shift(txt,shift),result)
     
+    def test_string_un_shift(self):
+        test_cases = [
+                ('abcasd adssad',5),
+                ('1234561010789',3),
+                ('hola_myam123igo',19),
+                ('',3)
+        ]
+
+        for txt,shift in test_cases:
+            result = be.string_shift(txt,shift)
+            self.assertEqual(be.string_un_shift(result,shift),txt)
+
     def test_string_bit_shift(self):
         pass
 
