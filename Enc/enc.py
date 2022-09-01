@@ -1,5 +1,4 @@
-from hashlib import new, sha256
-from threading import Thread
+from hashlib import sha256
 from multiprocessing import Process
 
 class Enc:
@@ -49,12 +48,8 @@ class Enc:
         num_list = []
 
         for idx in range(1, int(len(key) // 5) + 1):
-            if idx > len(key):
-                break
-
-            else:
-                temp_list = key[(idx * 5) - 5  :idx * 5]
-                num_list.append(cls.generate_nums(temp_list,case)) 
+            temp_list = key[(idx * 5) - 5  :idx * 5]
+            num_list.append(cls.generate_nums(temp_list,case)) 
 
         return num_list
 
@@ -168,15 +163,15 @@ class Enc:
 
     @classmethod
     def generate_shuffle_list(cls,len_txt,key):
+        
         new_nums = []
         nums = []
         temp_num = list(range(len_txt))
-        nums = cls.generate_keylist(len_txt, key)
+        nums = cls.generate_keylist(len_txt * 5, key)
+
         for idx in range(len_txt):
-            try:
-                new_nums.append(temp_num.pop(nums[idx] % len(temp_num)))
-            except ZeroDivisionError:
-                pass
+            new_idx = nums[idx] % len(temp_num)
+            new_nums.append(temp_num.pop(new_idx))
 
         return new_nums
 
@@ -194,7 +189,7 @@ class Enc:
     @classmethod
     def un_shuffle(cls, txt, key):
         shifts = cls.generate_shuffle_list(len(txt), key)
-        new_list = ['' for char in txt]
+        new_list = ['' for _ in txt]
         for idx in range(len(shifts)):
             new_list[shifts[idx]] = txt[idx]
         return Enc.convert_to_str(new_list)
@@ -324,6 +319,9 @@ class Block_Enc:
 
     @classmethod
     def string_bit_shift(cls,string,dict_1, dict_2,shift_num,Encrypt = True):
+        if type(string) != str or type(shift_num) != int: 
+            raise TypeError("String should be str  and shiftnum should be int")
+
         num_list = [str(bin(dict_2[char]))[2:] for char in string]
 
 

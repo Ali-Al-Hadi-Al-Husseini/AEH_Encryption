@@ -1,4 +1,3 @@
-from copy import copy
 from ..Enc.enc import  Block_Enc as be
 from ..Enc.enc import Block as b
 from ..Enc.enc import Enc as e
@@ -132,5 +131,26 @@ class TestBlockClass(unittest.TestCase):
             self.assertEqual(be.string_un_shift(result,shift),txt)
 
     def test_string_bit_shift(self):
-        pass
+        test_cases_success = [
+                ('abcasd adssad',5),
+                ('1234561010789',3),
+                ('hola_myam123igo',19),
+                ('',3),
+                ("mamamia gola tensioni",100)
+        ]
+        test_cases_error = [
+                    (123442,124),
+                    ('12345','as'),
+                    (1234,'ds')
+        ]
 
+        for txt,shift in test_cases_success:
+            result = be.string_bit_shift(txt,self.dict1,self.dict2,shift)
+            if result != "":
+                self.assertNotEqual(result,txt)
+            self.assertEqual(be.string_bit_shift(result,self.dict1,self.dict2,shift,False),txt)
+
+        for txt,shift in test_cases_error:
+            self.assertRaises(TypeError, lambda: be.string_bit_shift(txt,self.dict1,self.dict2,shift))
+                
+                

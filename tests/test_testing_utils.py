@@ -71,3 +71,15 @@ class TestTestingUtils(unittest.TestCase):
             block = blocks[idx]
             copy_block = blocks_copy[idx]
             self.assertTrue(block is not copy_block and block.bytes == copy_block.bytes)
+    
+    def test_get_nearist_2_power(self):
+        test_cases = [
+                    (1, 0),#since 2 ** 0 == 1
+                    (55,6),#since 2 ** 6 == 64 which is the nearset to 55
+                    (1000,10),
+                    (110_000,17),
+                    (1_000_000_000,30)
+        ]
+
+        for num, expected_result in test_cases:
+            self.assertEqual(expected_result,get_nearist_2_power(num))

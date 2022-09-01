@@ -36,3 +36,11 @@ def copy_blocks(blocks):
         blocks_copy[idx] = new_block
 
     return blocks_copy
+
+def get_nearist_2_power(num):
+    curr_num = 1
+    counter = 0
+    while curr_num < num:
+        curr_num *= 2
+        counter += 1
+    return counter
