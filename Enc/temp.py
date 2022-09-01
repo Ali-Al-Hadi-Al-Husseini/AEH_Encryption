@@ -101,13 +101,20 @@ d1,d2 = e.get_dicts(e.convert_to_hash(key))
 # ke = e.convert_to_hash("ASdsad")
 # print(len(e.create_hash_list(ke,250,1)))
 # print(len(e.generate_keylist(250,'afffmlkhs h')))
-from random import randrange
+# from random import randrange
 
 # for _ in range(10000):
 #     x = randrange(0,10000)
 #     print('===',x,'===')
 #     e.generate_shuffle_list(6647,"asdasbikhalfhasfhasnufhas")
 
-print(len(e.generate_keylist(6647, "asdasbikhalfhasfhasnufhas")))
-print("lalalalal")
+# print(e.generate_nums([0,0,0,0,0]))
+# print("lalalalal")
 # print(e.generate_shuffle_list(20,"asdsadasdsadasdasdsad"))
+temp_list = [20,0,0,1,0]
+len_chars = 250
+n1 = int((((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+n2 = int((((temp_list[2] ** temp_list[1]) +
+                            temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
+print("done")
+print(n1,n2)

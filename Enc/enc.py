@@ -64,36 +64,38 @@ class Enc:
         # this block genrates new number from the five number in the temp_list
         len_chars = len(cls.get_character_list())
         num1 = 0
+        if len(temp_list) >= 4:
+            try:
+                num1 += int((((temp_list[2] ** temp_list[1]) +
+                            temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
+                # in cases where temp_list[3] can be zero so thats why we used try/execpt here
+                if Case != 'NONE':
+                    if num1 == 0:
+                        num1 = int(
+                            (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
-        try:
-            num1 += int((((temp_list[2] ** temp_list[1]) +
-                          temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
-            # in cases where temp_list[3] can be zero so thats why we used try/execpt here
-            if Case != 'NONE':
-                if num1 == 0:
+                    if num1 == 0:
+                        num1 = int((  (temp_list[0] + temp_list[1] +
+                                temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+
+
+            except ZeroDivisionError:
+                # provides two alternative number if num1 has an error
+                try:
                     num1 = int(
                         (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
-                if num1 == 0:
+                except ZeroDivisionError:
+                    """num3 cann't have an error because it uses only addtion it can only be 0 if all the i
+                    tems in temp_list is zero which is to rare to happen """
+
                     num1 = int((  (temp_list[0] + temp_list[1] +
                             temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
 
+            return num1
 
-        except ZeroDivisionError:
-            # provides two alternative number if num1 has an error
-            try:
-                num1 = int(
-                    (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
-
-            except ZeroDivisionError:
-                """num3 cann't have an error because it uses only addtion it can only be 0 if all the i
-                tems in temp_list is zero which is to rare to happen """
-
-                num1 = int((  (temp_list[0] + temp_list[1] +
-                          temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
-
-        return num1
-
+        else:
+            raise ValueError("Templist should be consist of at least 5 items")
 
     # converts  a list which is normally passed from the class method generate_new_dicts
     @classmethod

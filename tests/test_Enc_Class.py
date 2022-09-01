@@ -54,6 +54,31 @@ class TestEncClass(unittest.TestCase):
             for num in keys_list:
                 self.assertTrue(type(num) == int)
 
+    def test_generate_nums(self):
+        test_cases_success = [
+            ([1,2,3,4,5],"NONE"),
+            ([1,2,3,4,5],"as"),
+            ([10,22,99,30,9],"aS"),
+            ([10,22,99,30,9],"NONE"),
+            ([11,22,33,44,55],'NONE'),
+            ([11,22,33,44,55],'as'),
+            ([0,0,0,0,0],'NONE'),
+            ([0,0,0,0,0],'AS'),
+            ([20,0,0,1,0],"b")
+
+        ]
+        test_cases_fail = [
+                [1],
+                [],
+                [1,3,3]
+        ]
+
+        for List,case in test_cases_success:
+            self.assertTrue(type(enc.generate_nums(List,case)),int)
+
+        for List in test_cases_fail:
+            self.assertRaises(ValueError,lambda: enc.generate_nums(List))
+
     def test_generate_shuffle_list(self):
         test_cases_success = [
             ('123_@78fam',200),
