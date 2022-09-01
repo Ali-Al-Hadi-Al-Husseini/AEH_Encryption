@@ -321,6 +321,72 @@ class Block_Enc:
 
         return blocks
 
+
+    @classmethod
+    def string_bit_shift(cls,string,dict_1, dict_2,shift_num,Encrypt = True):
+        num_list = [str(bin(dict_2[char]))[2:] for char in string]
+
+
+        for idx in range(len(num_list)):
+            if  len(num_list[idx]) < 8:
+                diff = 8 - len(num_list[idx]) 
+                adding = "".join(["0" for _ in range(diff)])
+                adding += num_list[idx]
+                num_list[idx] = adding
+    
+        byte_str = "".join(num_list)
+        if Encrypt:
+            byte_str = cls.string_shift(byte_str,shift_num)
+        else:
+            byte_str = cls.string_un_shift(byte_str,shift_num)
+
+        byte_list = []
+
+        for idx in range(len(byte_str) // 8):
+            byte_list.append(byte_str[idx * 8:(idx+1) * 8])
+        
+        return "".join([dict_1[int(byt,2)] for byt in byte_list])
+
+    @classmethod
+    def string_shift(cls,string,shift_num ):
+        shift_num %= len(string) if len(string) > 0 else 1
+        shift = len(string)- shift_num
+        shifted_string = string[shift:]
+        shifted_string += string[:shift]
+        return shifted_string
+
+    @classmethod
+    def string_un_shift(cls,string,shift_num):
+        unshifted_string = string[shift_num:]
+        unshifted_string += string[:shift_num]
+        return unshifted_string
+        
+    @classmethod
+    def mixblock(cls,blocks,key):
+        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
+        aux_list = blocks[:]
+
+        for idx in range(len(blocks)):
+            aux_list[idx] = blocks[row_shifts[idx]]
+        
+        return aux_list
+
+    @classmethod
+    def unmixblock(cls,blocks,key):
+        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
+
+        aux_list = blocks[:]
+
+        for idx in range(len(blocks)):
+            aux_list[row_shifts[idx]] = blocks[idx] 
+
+        return aux_list
+
+    @classmethod
+    def xor_blocks(cls,blocks,key_list,dict1,dict2):
+        for idx  in range(len(blocks)):
+            cls.xor_str(blocks[idx],key_list[idx],dict1,dict2)
+
     # @classmethod
     # def mix_blocks_process(cls, blocks, key_list):
     #     processs = []
@@ -348,61 +414,6 @@ class Block_Enc:
     #         process.join()
 
     #     return blocks
-
-    @classmethod
-    def string_bit_shift(cls,string,dict_1, dict_2,shift_num):
-        num_list = [str(bin(dict_2[char]))[2:] for char in string]
-
-
-        for idx in range(len(num_list)):
-            if  len(num_list[idx]) < 8:
-                diff = 8 - len(num_list[idx]) 
-                adding = "".join(["0" for _ in range(diff)])
-                adding += num_list[idx]
-                num_list[idx] = adding
-    
-        byte_str = "".join(num_list)
-        byte_str = cls.string_shift(byte_str,shift_num)
-
-
-        byte_list =[]
-
-        for idx in range(len(byte_str) // 8):
-            byte_list.append(byte_str[idx * 8:(idx+1) * 8])
-        
-        return "".join([dict_1[int(byt,2)] for byt in byte_list])
-
-    @classmethod
-    def string_shift(cls,string,shift_num ):
-        new_string = string[shift_num:]
-        new_string += string[:shift_num]
-        return new_string
-        
-    @classmethod
-    def mixblock(cls,blocks,key):
-        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
-        aux_list = blocks[:]
-
-        for idx in range(len(blocks)):
-            aux_list[idx] = blocks[row_shifts[idx]]
-        
-        return aux_list
-
-    @classmethod
-    def unmixblock(cls,blocks,key):
-        row_shifts = Enc.generate_shuffle_list(len(blocks), key)
-
-        aux_list = blocks[:]
-
-        for idx in range(len(blocks)):
-            aux_list[row_shifts[idx]] = blocks[idx] 
-
-        return aux_list
-
-    @classmethod
-    def xor_blocks(cls,blocks,key_list,dict1,dict2):
-        for idx  in range(len(blocks)):
-            cls.xor_str(blocks[idx],key_list[idx],dict1,dict2)
 
     # @classmethod
     # def xor_blocks_procsess(cls,blocks,key_list,dict1,dict2):

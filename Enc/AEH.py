@@ -90,7 +90,15 @@ class AE:
                 text+= "%"
         size = len(text) +((len(text) % 64) - 64 )
         hashed_key = Enc.convert_to_hash(key)
+        dict_1, dict_2 = Enc.get_dicts(hashed_key)
+        shift = 0 
 
+        for char in hashed_key:
+            shift += (dict_2[char] * 13)
+
+        shift %= size
+
+        text = Block_Enc.string_bit_shift(text,dict_1,dict_2,shift)
         text = cls.Encrypt(text,key)
         un_joind = Enc.create_hash_list(hashed_key, size)
         key_list = ["".join(un_joind[idx * 64 : (idx +1) * 64]) for idx in range(len(un_joind) // 64)]
@@ -99,7 +107,6 @@ class AE:
         #to speed up uncomment and use mix_blocks_process
         # but you need to run under if __name__ == '__main__':
         blocks = Block_Enc.mix_blocks(blocks,key_list)
-        dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
         
@@ -130,6 +137,13 @@ class AE:
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key))
+        shift = 0
+        for char in hashed_key:
+            shift += (dict_2[char] * 13)
+
+        shift %= size
+
+        text = Block_Enc.string_bit_shift(text,dict_1,dict_2,shift,False)
 
         while result[-1] == "%":
             result.pop()

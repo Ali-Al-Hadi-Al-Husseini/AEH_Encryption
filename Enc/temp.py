@@ -1,19 +1,18 @@
-from operator import xor
 from enc import Block_Enc as be
 from enc import Block as b 
 from enc import Enc as e
 
 # block = b("qwertyuiopasdfghjklzxcvbnm")
-# key = "test_key_123_11"
-# d1,d2 = e.get_dicts(e.convert_to_hash(key))
+key = "test_key_123_11"
+d1,d2 = e.get_dicts(e.convert_to_hash(key))
 # t1 = "qwerty"
 # t2 = "asdrty"
 # chars = []
 
-# from AEH import AE
-# en = AE.Block_Encryption('asdssadasdasdasdasddasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsasdasdasdasdsaada',key)
-# print(en)
-# print(AE.Block_Decryption(en,key))
+from AEH import AE
+en = AE.Block_Encryption('asdssadasdasdasdasddasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsasdasdasdasdsaada',key)
+print(en)
+print(AE.Block_Decryption(en,key))
 # x = ((bin(d2['n'])[2:]))
 # x1 = (((bin(d2['a'])[2:])))
 # nd= ''.join(['0' for _ in range(8-len(x))])
@@ -44,7 +43,17 @@ from enc import Enc as e
 # print(res)
 # print((func(res,'mnb',d1,d2)))
 
-blocks = be.split_to_parts("sadasdasdasdasd",2)
-blocks_copy = blocks.copy()
+# blocks = be.split_to_parts("sadasdasdasdasd",2)
+# blocks_copy = blocks.copy()
 
-print(blocks is blocks_copy)
+# print(blocks is blocks_copy)
+
+# string = "abcd"
+
+# new_string = be.string_bit_shift('hola_myamigo',d1,d2,2)
+# print('678912345' == new_string)
+
+# string = "as dsadasds adasd asdsadasda sdasd asdas das dasd asdlj glsdjgodsiagh kJSDGAASDG LAKGALKD G HADSLKFHDSKUGFSDLKJgb SDLKGNREKUHT ERAKUGTH ERSIUG HREPIU VHERPIU GERKJHG ERP KJ bokjbdnogfdi"
+
+# bytes_strings = be.string_shift(string,20)
+# print(be.string_un_shift(bytes_strings,20))
