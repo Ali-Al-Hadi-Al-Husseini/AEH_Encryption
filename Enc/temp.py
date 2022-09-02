@@ -1,17 +1,20 @@
-from enc import Block_Enc as be
-from enc import Block as b 
-from enc import Enc as e
+from AEH import AE as ae 
 
 # block = b("qwertyuiopasdfghjklzxcvbnm")
 key = "test_key_123_11"
-d1,d2 = e.get_dicts(e.convert_to_hash(key))
+# d1,d2 = e.get_dicts(e.convert_to_hash(key))
 # t1 = "qwerty"
 # t2 = "asdrty"
 # chars = []
 
-# from AEH import AE
-# en = AE.Block_Encryption('asdssadasdasdasdasddasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsasdasdasdasdsaada',key)
-# print(en)
+from AEH import AE
+text = "123567"
+temp = ((len(text) % 64) - 64 )
+size = len(text) +((len(text) % 64) - 64 )
+
+en = AE.Block_Encryption(text,'lt77ma@345')
+print(AE.Block_Decryption(en,'lt77ma@345'))
+
 # print(AE.Block_Decryption(en,key))
 # x = ((bin(d2['n'])[2:]))
 # x1 = (((bin(d2['a'])[2:])))
@@ -111,10 +114,14 @@ d1,d2 = e.get_dicts(e.convert_to_hash(key))
 # print(e.generate_nums([0,0,0,0,0]))
 # print("lalalalal")
 # print(e.generate_shuffle_list(20,"asdsadasdsadasdasdsad"))
-temp_list = [20,0,0,1,0]
-len_chars = 250
-n1 = int((((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
-n2 = int((((temp_list[2] ** temp_list[1]) +
-                            temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
-print("done")
-print(n1,n2)
+# temp_list = [20,0,0,1,0]
+# len_chars = 250
+# n1 = int((((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+# n2 = int((((temp_list[2] ** temp_list[1]) +
+#                             temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
+# print("done")
+# print(n1,n2)
+
+# txt = "dsadsadsa"
+# et  = ae.Decrypt(txt,key)
+# print(ae.Encrypt(et,key))

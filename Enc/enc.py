@@ -335,6 +335,7 @@ class Block_Enc:
                 num_list[idx] = adding
     
         byte_str = "".join(num_list)
+        
         if Encrypt:
             byte_str = cls.string_shift(byte_str,shift_num)
         else:

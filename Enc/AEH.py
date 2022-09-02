@@ -1,12 +1,12 @@
-from msilib.schema import Error
-from enc import Enc , Block_Enc
-from random import randrange
+from .enc import Enc , Block_Enc
+
 
 class AE:
     # encrypts the text that was given
     def __init__(self,key):
         self.stream_number = 1
         self.cur_keys_list = []
+        self.un_hashed = key
         self.key = Enc.convert_to_hash(key)
 
     @classmethod
@@ -86,16 +86,17 @@ class AE:
     @classmethod
     def Block_Encryption(cls,text, key):
         if len(text) % 64 != 0:
-            for i in range(64 - (len(text) % 64)):
+            for _ in range(64 - (len(text) % 64)):
                 text+= "%"
-        size = len(text) +((len(text) % 64) - 64 )
+        size = len(text) +((64 - (len(text) % 64)  ))
         hashed_key = Enc.convert_to_hash(key)
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
         shift = 0 
 
         for char in hashed_key:
-            shift += (dict_2[char] * 13)
-
+            shift += dict_2[char] 
+        
+        shift *= 13
         shift %= size
 
         text = Block_Enc.string_bit_shift(text,dict_1,dict_2,shift)
@@ -120,7 +121,7 @@ class AE:
             
     @classmethod
     def Block_Decryption(cls,text, key):
-        size = len(text) +((len(text) % 64) - 64 )
+        size = len(text) +((64 - (len(text) % 64)))
         hashed_key = Enc.convert_to_hash(key)
 
         un_joind = Enc.create_hash_list(hashed_key, size)
@@ -137,13 +138,15 @@ class AE:
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key))
+
         shift = 0
         for char in hashed_key:
-            shift += (dict_2[char] * 13)
+            shift += dict_2[char]
 
+        shift *= 13
         shift %= size
 
-        text = Block_Enc.string_bit_shift(text,dict_1,dict_2,shift,False)
+        result = list(Block_Enc.string_bit_shift(''.join(result),dict_1,dict_2,shift,False))
 
         while result[-1] == "%":
             result.pop()

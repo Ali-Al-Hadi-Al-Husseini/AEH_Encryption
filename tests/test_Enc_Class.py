@@ -95,8 +95,7 @@ class TestEncClass(unittest.TestCase):
             has_the_right_numbers = True
 
             for num in shuffle_list:
-                if num < 0 or num >= len_txt:
-                    has_the_right_numbers = False
+                self.assertFalse(num < 0 or num >= len_txt)
             
             self.assertTrue(has_the_right_numbers and has_the_right_length)
 

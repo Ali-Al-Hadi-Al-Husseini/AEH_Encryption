@@ -13,7 +13,7 @@ class TestBlockClass(unittest.TestCase):
         self.key = "test_key_123_11"
 
 
-    def test_mix(self):
+    def test_mix(self) -> None :
         self.block.mix(self.key)
         self.assertNotEqual(self.block.bytes,self.txt)
     
