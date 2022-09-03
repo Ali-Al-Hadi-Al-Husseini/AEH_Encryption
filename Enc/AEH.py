@@ -1,5 +1,5 @@
 from .enc import Enc , Block_Enc
-
+from random import randrange
 
 class AE:
     # encrypts the text that was given
@@ -180,7 +180,7 @@ class AE:
         if len(key) < 64 : 
             raise ValueError("Key is to Short")
 
-        if 0 > add_to_hash_half > (len(key) // 4): 
+        if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
 
         if len(text) % 64 != 0:

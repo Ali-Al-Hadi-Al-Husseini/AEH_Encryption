@@ -11,9 +11,9 @@ from AEH import AE
 text = "123567"
 temp = ((len(text) % 64) - 64 )
 size = len(text) +((len(text) % 64) - 64 )
-
-en = AE.Block_Encryption(text,'lt77ma@345')
-print(AE.Block_Decryption(en,'lt77ma@345'))
+key = 'lt77ma@345'* 10
+en,chars = AE.professional_encryption(text,key,17)
+print(AE.professional_decryption(en,key,17,chars))
 
 # print(AE.Block_Decryption(en,key))
 # x = ((bin(d2['n'])[2:]))
