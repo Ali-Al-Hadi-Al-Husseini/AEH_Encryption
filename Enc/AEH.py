@@ -114,13 +114,15 @@ class AE:
         
         result = list(Block_Enc.connect_blocks(blocks))
 
-        while result[-1] == "%":
-            result.pop()
+
+        if len(result) > 0 :
+            while result[-1] == "%":
+                result.pop()
 
         return "".join(result)
             
     @classmethod
-    def Block_Decryption(cls,text, key):
+    def Block_Decryption(cls,text, key,last=True):
         size = len(text) +((64 - (len(text) % 64)))
         hashed_key = Enc.convert_to_hash(key)
 
@@ -147,10 +149,11 @@ class AE:
         shift %= size
 
         result = list(Block_Enc.string_bit_shift(''.join(result),dict_1,dict_2,shift,False))
-
-        while result[-1] == "%":
-            result.pop()
         
+        if last and len(result) > 0:
+            while result[-1] == "%":
+                result.pop()
+            
         return "".join(result)
 
     @classmethod
@@ -166,11 +169,12 @@ class AE:
 
     @classmethod
     def block_decryption_rounds(cls,text,key,rounds=6):
-        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) * 64)
         temp = text
 
         for idx in range(len(key_list)):
-            temp = cls.Block_Decryption(temp,key_list[len(key_list)-1-idx])
+            Hash = key_list[len(key_list)-1-idx]
+            temp = cls.Block_Decryption(temp,Hash,idx == (len(key_list) - 1))
         
         return temp
 

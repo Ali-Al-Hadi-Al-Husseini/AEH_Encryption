@@ -7,14 +7,18 @@ key = "test_key_123_11"
 # t2 = "asdrty"
 # chars = []
 
-from AEH import AE
-text = "123567"
-temp = ((len(text) % 64) - 64 )
-size = len(text) +((len(text) % 64) - 64 )
-key = 'lt77ma@345'* 10
-en,chars = AE.professional_encryption(text,key,17)
-print(AE.professional_decryption(en,key,17,chars))
-
+# from AEH import AE
+# text = "123567"
+# temp = ((len(text) % 64) - 64 )
+# size = len(text) +((len(text) % 64) - 64 )
+# key = 'lt77ma@345'* 10
+# en,chars = AE.professional_encryption(text,key,17)
+# print(AE.professional_decryption(en,key,17,chars))
+txt,key , tounds = ('1234567 sfdsfsdfdsf sdfsdf ds89','123456789',9)
+# txt = "ali_is_here133"
+# key = "12345677890"
+enc = ae.block_encryption_rounds(txt,key,tounds)
+print(ae.block_decryption_rounds(enc,key,tounds))
 # print(AE.Block_Decryption(en,key))
 # x = ((bin(d2['n'])[2:]))
 # x1 = (((bin(d2['a'])[2:])))
