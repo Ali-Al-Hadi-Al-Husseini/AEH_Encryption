@@ -180,20 +180,22 @@ class Enc:
 
     @classmethod
     def shuffle(cls, txt, key):
-        new_txt = ''
+        new_txt = ['' for ch in txt]
         row_shifts = cls.generate_shuffle_list(len(txt), key)
         
         for idx in range(len(txt)):
-            new_txt += txt[row_shifts[idx]]
+            new_txt[idx] = txt[row_shifts[idx]]
 
-        return new_txt
+        return ''.join(new_txt)
 
     @classmethod
     def un_shuffle(cls, txt, key):
         shifts = cls.generate_shuffle_list(len(txt), key)
         new_list = ['' for _ in txt]
+
         for idx in range(len(shifts)):
             new_list[shifts[idx]] = txt[idx]
+            
         return Enc.convert_to_str(new_list)
         
 

@@ -214,14 +214,11 @@ class AE:
         
         result = list(Block_Enc.connect_blocks(blocks))
 
-        while result[-1] == "%":
-            result.pop()
-
         return "".join(result), character_list
 
     @classmethod
     def professional_decryption(cls,text: str,key: str,add_to_hash_half: int,character_list: list):
-        if 0 > add_to_hash_half > (len(key) // 4): 
+        if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length on the key divided by 4")
 
         size = len(text) +((len(text) % 64) - 64 )
@@ -241,9 +238,10 @@ class AE:
         result = list(Block_Enc.connect_blocks(blocks))
         result = list(cls.Decrypt(result,key,add_to_hash_half,character_list))
 
-        while result[-1] == "%":
-            result.pop()
-        
+        if len(result) > 0 :
+            while result[-1] == "%":
+                result.pop()
+            
         return "".join(result)
 
     @classmethod
