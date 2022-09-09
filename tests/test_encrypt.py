@@ -1,9 +1,9 @@
 from .testing_utils import *
 from ..Enc.AEH import AE as ae
-import unittest
+from unittest import TestCase
 
 
-class TestEncrypt(unittest.TestCase):
+class TestEncrypt(TestCase):
 
     def setUp(self) -> None:
         self.test_cases = [

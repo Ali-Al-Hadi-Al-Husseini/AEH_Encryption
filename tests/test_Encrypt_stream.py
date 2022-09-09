@@ -1,8 +1,8 @@
 from ..Enc.AEH import  AE as ae
-import unittest
+from unittest import TestCase
 
 
-class TestStream(unittest.TestCase):
+class TestStream(TestCase):
 
     def setUp(self) -> None:
         keys = ["asdasdsa",'1234567','Lt_@&&786mti']

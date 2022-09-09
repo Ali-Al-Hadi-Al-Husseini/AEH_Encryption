@@ -1,13 +1,13 @@
 from .testing_utils import *
 from ..Enc.enc import Block as b
 from ..Enc.enc import Block_Enc as be
-import unittest
+from unittest import TestCase
 
 
 
 
 
-class TestTestingUtils(unittest.TestCase):
+class TestTestingUtils(TestCase):
     
     def test_same_but_splited(self):
         test_cases_success = [

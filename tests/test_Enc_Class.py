@@ -1,11 +1,11 @@
 from ..Enc.enc import  Enc as enc
 from .testing_utils import get_nearist_2_power
-import unittest
+from unittest import TestCase
 
 
 
 
-class TestEncClass(unittest.TestCase):
+class TestEncClass(TestCase):
     
     def setUp(self) -> None:
         self.txt = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget nisl quis urna placerat pretium. Proin dignissim erat sapien, vitae ornare odio tempor non. Pellentesque finibus massa a arcu dictum sollicitudin. In interdum massa vitae dolor aliquam elementum. Sed euismod lacus et elit s"""

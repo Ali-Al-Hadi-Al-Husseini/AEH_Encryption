@@ -2,11 +2,11 @@ from ..Enc.enc import  Block_Enc as be
 from ..Enc.enc import Block as b
 from ..Enc.enc import Enc as e
 from .testing_utils import *
-import unittest
+from unittest import TestCase
 
 
 
-class TestBlockClass(unittest.TestCase):
+class TestBlockClass(TestCase):
 
     def setUp(self) -> None:
         self.key = "test_key_123_11"

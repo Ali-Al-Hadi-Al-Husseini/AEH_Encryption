@@ -1,9 +1,9 @@
 from ..Enc.AEH import  AE as ae
-import unittest
+from unittest import TestCase
 
 
 
-class TestEncryptShuffling(unittest.TestCase):
+class TestEncryptShuffling(TestCase):
 
     def setUp(self) -> None:
         self.test_cases = [
