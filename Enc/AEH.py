@@ -246,21 +246,30 @@ class AE:
 
     @classmethod
     def professional_block_encryption_rounds(cls,text: str,key: str,add_to_hash_half: int,rounds=6):
-        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+        if len(key) < 64 : 
+            raise ValueError("Key is to Short")
+
+        if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
+            raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
+
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) * 64)
         temp = text
-
+        chars_list = []
         for idx in range(len(key_list)):
-            temp = cls.professional_encryption(temp,key_list[idx],add_to_hash_half)
+            temp,chars = cls.professional_encryption(temp,key_list[idx],add_to_hash_half)
+            chars_list.append(chars)
 
-        
-        return temp
+        return temp ,chars_list
 
     @classmethod
-    def professional_block_decryption_rounds(cls,text: str,key: str,add_to_hash_half: int,character_list: list,rounds=6):
-        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) *64)
+    def professional_block_decryption_rounds(cls,text: str,key: str,add_to_hash_half: int,characters_list: list,rounds=6):
+        if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
+            raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
+
+        key_list = Enc.create_list(Enc.convert_to_hash(key),(rounds) * 64)
         temp = text
 
         for idx in range(len(key_list)):
-            temp = cls.professional_decryption(temp,key_list[len(key_list)-1-idx],add_to_hash_half,character_list)
+            temp = cls.professional_decryption(temp,key_list[len(key_list)-1-idx],add_to_hash_half,characters_list[len(characters_list)-1-idx])
         
         return temp

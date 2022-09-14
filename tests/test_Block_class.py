@@ -1,10 +1,10 @@
 from ..Enc.enc import  Block
-import unittest
+from unittest import TestCase
 
 
 
 
-class TestBlockClass(unittest.TestCase):
+class TestBlockClass(TestCase):
 
 
     def setUp(self) -> None:
