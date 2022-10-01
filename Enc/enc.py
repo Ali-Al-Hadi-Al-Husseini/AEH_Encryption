@@ -20,7 +20,7 @@ class Enc:
     @classmethod
     def split_and_hash(cls, key,add_to_half = 1):
         half_key = int(len(key) / 2) + add_to_half
-        return list((sha256(key[half_key:].encode()).hexdigest(), sha256(key[:half_key].encode()).hexdigest()))
+        return [cls.convert_to_hash(key[half_key:]),cls.convert_to_hash(key[:half_key])]
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
@@ -35,9 +35,7 @@ class Enc:
     @classmethod
     def create_hash_list(cls, key, size,add_to_half = 1):
         keys_list = cls.create_list(key, size * 5,add_to_half)
-        result = ""
-        for key in keys_list:
-            result += key
+        result = "".join(keys_list)
         return list(result)
 
     """ takes the size of the text that to be encrypted  and takes the key to genrate the file (keys.txt) using the class
