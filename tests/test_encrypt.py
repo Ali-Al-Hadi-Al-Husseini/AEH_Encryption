@@ -1,9 +1,9 @@
 from .testing_utils import *
 from ..Enc.AEH import AE as ae
-from unittest import TestCase
+import unittest
 
 
-class TestEncrypt(TestCase):
+class TestEncrypt(unittest.TestCase):
 
     def setUp(self) -> None:
         self.test_cases = [
@@ -16,14 +16,17 @@ class TestEncrypt(TestCase):
     def test_Encrypt(self):
         for txt, key in self.test_cases:
             encrypted = ae.Encrypt(txt,key)
+            print(encrypted)
             self.assertNotEqual(encrypted, txt)
 
     def test_Decrypt(self):
         for txt, key in self.test_cases:
             encrypted = ae.Encrypt(txt,key)
             decrypted = ae.Decrypt(encrypted,key)
+            print(decrypted)
             self.assertEqual(decrypted, txt)
 
 
 
-        
+if __name__ == '__main__':
+    unitte
