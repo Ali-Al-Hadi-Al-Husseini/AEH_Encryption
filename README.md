@@ -8,8 +8,8 @@ AEH is a new Encryption algorithm founded by Ali Al Hadi. To Test AEH fork it on
 from AEH import AE
 txt = 'something'
 key = 'key'
-encrypted = AE.Encrypt(txt, key)
-dcrypted = AE.Decrypt(txt, key)
+encrypted = AE.Encrypt(txt, key) # (returns encoded text)
+dcrypted = AE.Decrypt(encrypted, key) # (return orginal text after being decoded)
 ```
 ## Data streaming
 ### Used to send data over internert 
