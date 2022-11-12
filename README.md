@@ -3,7 +3,7 @@ AEH is a new Encryption algorithm founded by Ali Al Hadi. To Test AEH fork it on
 
 
 ## Usage
-
+### Normal stream encryption
 ```python
 from AEH import AE
 txt = 'something'
@@ -12,6 +12,7 @@ encrypted = AE.Encrypt(txt, key)
 dcrypted = AE.Decrypt(txt, key)
 ```
 ## Data streaming
+### Used to send data over internert 
 ```python
 from AEH import AE
 sender_object = AE(Key)
