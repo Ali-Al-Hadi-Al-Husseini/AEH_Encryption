@@ -25,7 +25,7 @@ decoded_txt_2 = sender_object.decrypt_stream(txt_2) ( returns another_text_to_be
 
 ```
 ## Block Encryption 
-### Used to send data over internert 
+### encrypts data  as a 64 char (256 bit) block
 ```python
 from AEH import AE
 sender_object = AE(Key)
