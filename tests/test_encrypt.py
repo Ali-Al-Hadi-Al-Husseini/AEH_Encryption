@@ -27,6 +27,3 @@ class TestEncrypt(unittest.TestCase):
             self.assertEqual(decrypted, txt)
 
 
-
-if __name__ == '__main__':
-    unitte
