@@ -134,7 +134,7 @@ class AE:
         dict_1, dict_2 = Enc.get_dicts(hashed_key)
 
         Block_Enc.xor_blocks(blocks,key_list,dict_1,dict_2)
-        #to speed up uncomment and use unmix_blocks_process
+        #to speed up uncomment and use unmix_blocks_process in enc.py file
         # but you need to run under if __name__ == '__main__':
         
         blocks = Block_Enc.un_mix_blocks(blocks, key_list)

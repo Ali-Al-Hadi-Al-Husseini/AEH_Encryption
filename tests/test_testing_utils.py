@@ -82,4 +82,4 @@ class TestTestingUtils(TestCase):
         ]
 
         for num, expected_result in test_cases:
-            self.assertEqual(expected_result,get_nearist_2_power(num))
+            self.assertEqual(expected_result,get_nearist_2_power(num) )

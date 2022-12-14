@@ -1,21 +1,25 @@
 from hashlib import sha256
 import numpy as np
 
+
+
+def get_nearist_2_power_until_64(num):
+    counter = 0
+    while num > 64 :
+        num //= 2
+        counter += 1
+    return counter 
+
+
 class Enc:
 
-    # creater a string that is as the size of the file from hashes using sha256
     @classmethod
     def create_list(cls, Key, size,add_to_half = 1):
-        if size <= 64:
-            new_key = [Key]
-            return new_key
-
-        else:
-            new_keys = []
-            new_list = cls.create_new_list(cls.create_list(Key, (size // 2),add_to_half))
-            new_keys.extend(new_list)
+        keys = [Key]
+        for _ in range(get_nearist_2_power_until_64(size)):
+            keys = cls.create_list_helper(keys,add_to_half)
             
-            return new_keys
+        return keys
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
@@ -25,14 +29,14 @@ class Enc:
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
-    def create_new_list(cls, keys):
+    def create_list_helper(cls, keys, add_to_half=1 ):
         new_keys = []
         for key in keys:
-            new_keys.extend(cls.split_and_hash(key))
+            new_keys.extend(cls.split_and_hash(key, add_to_half))
 
         return new_keys
 
-    # write the  generated list from create_new_list in a file called keys.txt
+    # write the  generated list from create_list_helper in a file called keys.txt
     @classmethod
     def create_hash_list(cls, key, size,add_to_half = 1):
         keys_list = cls.create_list(key, size * 5,add_to_half)
@@ -117,7 +121,7 @@ class Enc:
         character_list = cls.get_character_list()
 
         new_character_list = []
-        keys = cls.generate_keylist(len(character_list), key,'A')
+        keys = cls.generate_keylist(len(character_list), key,case='A')
 
         for idx in range(len(character_list)):
             new_character_list.append(character_list.pop(
