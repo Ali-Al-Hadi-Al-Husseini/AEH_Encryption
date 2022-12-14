@@ -40,7 +40,14 @@ def copy_blocks(blocks):
 def get_nearist_2_power(num):
     curr_num = 1
     counter = 0
-    while curr_num < num:
+    while curr_num <= num :
         curr_num *= 2
         counter += 1
     return counter
+
+def get_nearist_2_power_until_64(num):
+    counter = 0
+    while num > 64 :
+        num //= 2
+        counter += 1
+    return 2 ** counter 

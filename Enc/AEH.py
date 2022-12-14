@@ -178,7 +178,7 @@ class AE:
         
         return temp
 
-    #TODO
+    
     @classmethod
     def professional_encryption(cls,text: str,key: str,add_to_hash_half: int):
         if len(key) < 64 : 

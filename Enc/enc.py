@@ -1,5 +1,5 @@
 from hashlib import sha256
-from multiprocessing import Process
+import numpy as np
 
 class Enc:
 
@@ -14,12 +14,13 @@ class Enc:
             new_keys = []
             new_list = cls.create_new_list(cls.create_list(Key, (size // 2),add_to_half))
             new_keys.extend(new_list)
+            
             return new_keys
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
     def split_and_hash(cls, key,add_to_half = 1):
-        half_key = int(len(key) / 2) + add_to_half
+        half_key = (len(key) // 2) + add_to_half
         return [cls.convert_to_hash(key[half_key:]),cls.convert_to_hash(key[:half_key])]
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
@@ -85,7 +86,7 @@ class Enc:
 
                 except ZeroDivisionError:
                     """num3 cann't have an error because it uses only addtion it can only be 0 if all the i
-                    tems in temp_list is zero which is to rare to happen """
+                    tems in temp_list is zero which is rare to happen """
 
                     num1 = int((  (temp_list[0] + temp_list[1] +
                             temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
@@ -98,12 +99,7 @@ class Enc:
     # converts  a list which is normally passed from the class method generate_new_dicts
     @classmethod
     def convert_to_dict(cls, character_list):
-        dict1 = {}
-
-        for i in range(len(character_list)):
-            dict1[i] = character_list[i]
-
-        return dict1
+        return {idx:_char for idx,_char in enumerate(character_list) }
 
     # returns a new dict where the keys are the value and vice versa
     @classmethod
@@ -352,15 +348,19 @@ class Block_Enc:
     def string_shift(cls,string,shift_num ):
         shift_num %= len(string) if len(string) > 0 else 1
         shift = len(string)- shift_num
+
         shifted_string = string[shift:]
         shifted_string += string[:shift]
+
         return shifted_string
 
     @classmethod
     def string_un_shift(cls,string,shift_num):
         shift_num %= len(string) if len(string) > 0 else 1
+        
         unshifted_string = string[shift_num:]
         unshifted_string += string[:shift_num]
+
         return unshifted_string
         
     @classmethod
@@ -388,6 +388,8 @@ class Block_Enc:
     def xor_blocks(cls,blocks,key_list,dict1,dict2):
         for idx  in range(len(blocks)):
             cls.xor_str(blocks[idx],key_list[idx],dict1,dict2)
+
+# from multiprocessing import Process
 
     # @classmethod
     # def mix_blocks_process(cls, blocks, key_list):
@@ -428,7 +430,4 @@ class Block_Enc:
 
     #     for process in processs:
     #         process.join()
-
-
-
 
