@@ -1,14 +1,27 @@
 from hashlib import sha256
 import numpy as np
-
-
-
+import random
 def get_nearist_2_power_until_64(num):
     counter = 0
     while num > 64 :
         num //= 2
         counter += 1
     return counter 
+
+def test_create_list() -> None:
+    test_cases = [
+                ("""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget nisl quis urna placerat pretium. Proin dignissim erat sapien, vitae ornare odio tempor non. Pellentesque finibus massa a arcu dictum sollicitudin. In interdum massa vitae dolor aliquam elementum. Sed euismod lacus et elit s""","test_key_123"),
+                ("holala go me 124",'test123'),
+                ("hola gola me 124" * 7,'test123'),
+                ("Don't be the same be better !  quote of the day "* 7,'quote124'),
+
+    ]
+    for txt,key in test_cases:
+        hashed_key = Enc.convert_to_hash(key)
+        ls = [hashed_key for _ in range(random.randrange(0,100))]
+        size = len(Enc.create_list_helper(ls,len(txt)))
+
+        assert len(ls) * 2 == (size )
 
 
 class Enc:
@@ -30,10 +43,14 @@ class Enc:
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
     def create_list_helper(cls, keys, add_to_half=1 ):
-        new_keys = []
+        new_keys = np.empty((len(keys) * 2),dtype='<U65')
+        idx = 0 
         for key in keys:
-            new_keys.extend(cls.split_and_hash(key, add_to_half))
-
+            left,right = cls.split_and_hash(key, add_to_half)
+            new_keys[idx] = left
+            idx+=1 
+            new_keys[idx] = right
+            idx += 1 
         return new_keys
 
     # write the  generated list from create_list_helper in a file called keys.txt
@@ -435,3 +452,4 @@ class Block_Enc:
     #     for process in processs:
     #         process.join()
 
+test_create_list()
