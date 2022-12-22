@@ -1,4 +1,5 @@
-from ..Enc.enc import Block as b
+
+from enc import Block as b
 
 def same_but_splited(txt,splited_parts):
     len_splited_parts = len(''.join(splited_parts))
