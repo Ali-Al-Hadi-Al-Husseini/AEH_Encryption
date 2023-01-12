@@ -1,5 +1,5 @@
-from .testing_utils import *
-from ..Enc.AEH import AE as ae
+from testing_utils import *
+from enc import AE as ae
 import unittest
 
 

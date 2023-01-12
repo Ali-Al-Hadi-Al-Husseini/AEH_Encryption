@@ -1,11 +1,11 @@
-from ..Enc.enc import  Enc as enc
-from .testing_utils import get_nearist_2_power,get_nearist_2_power_until_64
-from unittest import TestCase
+from enc import  *
+from testing_utils import get_nearist_2_power,get_nearist_2_power_until_64
+import unittest
 
 
 
 
-class TestEncClass(TestCase):
+class TestEncClass(unittest.TestCase):
     
     def test_create_list(self) -> None:
         test_cases = [
@@ -17,15 +17,15 @@ class TestEncClass(TestCase):
         ]
         for txt,key in test_cases:
             supposed_size =(get_nearist_2_power_until_64(len(txt))) 
-            hashed_key = enc.convert_to_hash(key)
-            size = len(enc.create_list(hashed_key,len(txt)))
+            hashed_key = Keys.convert_to_hash(key)
+            size = len(Keys.create_list(hashed_key,len(txt)))
 
             self.assertEqual(size,supposed_size)
 
 
     def test_split_and_hash(self) -> None:
-        hash = enc.convert_to_hash("test_test")
-        func_result = enc.split_and_hash(hash)
+        hash = Keys.convert_to_hash("test_test")
+        func_result = Keys.split_and_hash(hash)
         self.assertTrue(len(func_result) == 2 and type(func_result) == list) 
 
     def test_create_hash_list(self):
@@ -37,7 +37,7 @@ class TestEncClass(TestCase):
         ]
 
         for key,size in test_cases:
-            hash_list = enc.create_hash_list(key,size)
+            hash_list,_ = Keys.create_hash_list(key,size)
             has_right_size = len(hash_list) == 2 ** (get_nearist_2_power(size * 5))
             self.assertTrue(has_right_size)
 
@@ -53,7 +53,7 @@ class TestEncClass(TestCase):
         ]
 
         for key,size,case in test_cases:
-            keys_list = enc.generate_keylist(size * 5,key,1,case)
+            keys_list = Keys.generate_keylist(size * 5,key,1,case)
             self.assertTrue(len(keys_list) > size)
 
             for num in keys_list:
@@ -79,10 +79,10 @@ class TestEncClass(TestCase):
         ]
 
         for List,case in test_cases_success:
-            self.assertTrue(type(enc.generate_nums(List,case)),int)
+            self.assertTrue(type(Keys.generate_nums(List,case)),int)
 
         for List in test_cases_fail:
-            self.assertRaises(ValueError,lambda: enc.generate_nums(List))
+            self.assertRaises(ValueError,lambda: Keys.generate_nums(List))
 
     def test_generate_shuffle_list(self):
         test_cases_success = [
@@ -95,7 +95,7 @@ class TestEncClass(TestCase):
 
 
         for key,len_txt in test_cases_success:
-            shuffle_list = enc.generate_shuffle_list(len_txt,key)
+            shuffle_list = Shuffle.generate_shuffle_list(len_txt,len_txt,key)
             has_the_right_length = len(shuffle_list) == len_txt
             has_the_right_numbers = True
 
@@ -113,7 +113,7 @@ class TestEncClass(TestCase):
         ]
 
         for txt, key in test_cases:
-            shuffled  = enc.shuffle(txt,enc.convert_to_hash(key))
+            shuffled  = Shuffle.shuffle(txt,Keys.convert_to_hash(key))
 
             self.assertTrue(len(txt) == len(shuffled))
             self.assertTrue(txt != shuffled or txt == '')
@@ -132,9 +132,11 @@ class TestEncClass(TestCase):
         ]
 
         for txt,key in test_cases:
-            Hash = enc.convert_to_hash(key)
-            shuffled = enc.shuffle(txt,Hash)
+            Hash = Keys.convert_to_hash(key)
+            shuffled = Shuffle.shuffle(txt,Hash)
             
-            self.assertEqual(txt, enc.un_shuffle(shuffled,Hash))
+            self.assertEqual(txt, Shuffle.un_shuffle(shuffled,Hash))
         
 
+if __name__ == "__main__":
+    unittest.main()

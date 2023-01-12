@@ -1,5 +1,5 @@
-from ..Enc.AEH import  AE as ae
-from unittest import TestCase
+from enc import  AE as ae
+from unittest import TestCase,main
 
 
 
@@ -23,3 +23,4 @@ class TestEncryptShuffling(TestCase):
             encrypted = ae.Encrypt_with_shuffling(txt,key)
             decrypted = ae.Decrypt_with_shuffling(encrypted,key)
             self.assertEqual(decrypted, txt)
+

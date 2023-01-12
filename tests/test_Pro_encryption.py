@@ -1,4 +1,4 @@
-from ..Enc.AEH import  AE as ae
+from enc import AE as ae
 import unittest
 
 
@@ -17,7 +17,7 @@ class TestProEncryption(unittest.TestCase):
                     ('aaaa' * 100,"my_pass_is_my_pass@123",2)
         ]
         self.test_case_fail_decrypt = [
-                    ('Lorem here and lorem there lorem lorem everywhere ' * 9,"my_password_123",0),
+                    ('Lorem here and lorem there lorem lorem everywhere ' * 9,"my_password_123",64),
                     ("123567", 'lt77ma@345',17),
                     ('123456789','123456789',-1),
                     ('aaaa' * 100,"my_pass_is_my_pass@123",200)
@@ -44,3 +44,5 @@ class TestProEncryption(unittest.TestCase):
             self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key,add,chars_list))
             self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key * 10,len(key) * 10,chars_list))
 
+if __name__ == '__main__':
+    unittest.main()

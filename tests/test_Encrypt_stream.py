@@ -1,4 +1,4 @@
-from ..Enc.AEH import  AE as ae
+from enc import  AE as ae
 from unittest import TestCase
 
 

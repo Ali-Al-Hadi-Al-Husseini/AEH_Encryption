@@ -1,7 +1,5 @@
-from ..Enc.enc import  Block
+from enc import  Block
 from unittest import TestCase
-
-
 
 
 class TestBlockClass(TestCase):
@@ -27,3 +25,4 @@ class TestBlockClass(TestCase):
 
     def test_len(self):
         self.assertEqual(len(self.txt),len(self.block))
+

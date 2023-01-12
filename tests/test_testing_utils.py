@@ -1,6 +1,5 @@
-from .testing_utils import *
-from ..Enc.enc import Block as b
-from ..Enc.enc import Block_Enc as be
+from testing_utils import *
+from enc import *
 from unittest import TestCase
 
 
@@ -64,7 +63,7 @@ class TestTestingUtils(TestCase):
 
     def test_copy_blocks(self):
         txt = 'qwertyuiopasdfghjkl'
-        blocks = be.split_to_parts(txt,2)
+        blocks = Block_Tools.split_to_parts(txt,2)
         blocks_copy = copy_blocks(blocks)
 
         for idx in range(len(blocks)):
