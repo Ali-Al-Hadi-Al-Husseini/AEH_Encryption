@@ -36,6 +36,17 @@ encoded  = AE.Block_Encryption(txt, key )  #  returns encoded text
 decoded = AE.Block_Decryption(encoded,key) # returns decoded text 
 
 ```
+## Professional Encryption 
+```python
+from AEH import AE
+text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."""
+key = "my_secret_key123" * 4 # key must be atleast 64 chars
+encrypted_txt,chars_list = AE.professional_encryption(text, key, 4) # generates a chars list that should be saved to decrypt the encryptes text
+
+decrypted_txt = AE.professional_decryption(encrypted_txt, key, 4, chars_list)
+
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

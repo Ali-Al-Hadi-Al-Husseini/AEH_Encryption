@@ -1,0 +1,21 @@
+name: Python tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install pytest
+      run: python3 -m pip install pytest
+    - name: Install numpy
+      run: python3 -m pip install numpy
+    - name: Run tests
+      run: python3 -m pytest

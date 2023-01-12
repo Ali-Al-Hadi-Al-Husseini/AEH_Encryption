@@ -1,10 +1,10 @@
-from Encryption_Tools.String_tools import String_tools
-from Encryption_Tools.Dict_tools import Dict_Tools
-from Encryption_Tools.keys_tools import Keys
+from .Encryption_Tools.String_tools import String_tools
+from .Encryption_Tools.Dict_tools import Dict_Tools
+from .Encryption_Tools.keys_tools import Keys
 
 
-from block.Block_tools import Block_Tools,Shuffle
-from Encryption_Tools.characters_list import get_characters_list
+from .block.Block_tools import Block_Tools,Shuffle
+from .Encryption_Tools.characters_list import get_characters_list
 from random import randrange
 
 
@@ -207,8 +207,13 @@ class AE:
         hashed_key = Keys.convert_to_hash(key)
 
         
-        _,key_list = Keys.create_hash_list(hashed_key, size,add_to_hash_half)
+        _,key_list = Keys.create_hash_list(hashed_key, size, add_to_hash_half)
         character_list =  Shuffle.shuffle(get_characters_list(),key_list[randrange(0,len(key_list))])
+
+        new_key = hashed_key + character_list
+        hashed_key = Keys.convert_to_hash(new_key)
+
+        _,key_list = Keys.create_hash_list(hashed_key, size, add_to_hash_half)
 
         text = cls.Encrypt(text, key, add_to_hash_half, character_list)
 
@@ -234,6 +239,8 @@ class AE:
 
         size = len(text) +((len(text) % 64) - 64 )
         hashed_key = Keys.convert_to_hash(key)
+        new_key = hashed_key + character_list
+        hashed_key = Keys.convert_to_hash(new_key)
 
         _,key_list  =Keys.create_hash_list(hashed_key, size, add_to_hash_half)
 
