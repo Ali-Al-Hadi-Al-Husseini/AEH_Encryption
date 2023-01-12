@@ -1,3 +1,10 @@
+import sys
+
+sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption')
+sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption\\Enc')
+sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption\\Enc\\block')
+sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption\\Enc\\Encryption_Tools')
+
 from block.Block_tools import Block_Tools,Shuffle,Block
 from Encryption_Tools.characters_list import get_characters_list
 from Encryption_Tools.Dict_tools import Dict_Tools
