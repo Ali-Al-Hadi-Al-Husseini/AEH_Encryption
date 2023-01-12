@@ -15,7 +15,7 @@ jobs:
         python-version: 3.9
     - name: Install pytest
       run: python3 -m pip install pytest
-  - name: Install numpy
+    - name: Install numpy
       run: python3 -m pip install numpy
     - name: Run tests
       run: python3 -m pytest
