@@ -3,8 +3,6 @@ sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption')
 sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption\\Enc')
 sys.path.append('c:\\Users\\lilo\\Documents\\GitHub\\AEH_Encryption\\orignal')
 
-
-from orignal import old_AEH
 from Enc import *
 
 
