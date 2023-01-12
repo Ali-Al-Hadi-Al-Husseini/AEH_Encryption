@@ -1,11 +1,11 @@
 from enc import  *
 from testing_utils import get_nearist_2_power,get_nearist_2_power_until_64
-from unittest import TestCase
+import unittest
 
 
 
 
-class TestEncClass(TestCase):
+class TestEncClass(unittest.TestCase):
     
     def test_create_list(self) -> None:
         test_cases = [
@@ -138,3 +138,5 @@ class TestEncClass(TestCase):
             self.assertEqual(txt, Shuffle.un_shuffle(shuffled,Hash))
         
 
+if __name__ == "__main__":
+    unittest.main()

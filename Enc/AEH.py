@@ -285,11 +285,11 @@ class AE:
         return temp
 
 
-if __name__ == "__main__":
-    print('started')
-    a,_ = AE.professional_encryption('holame amigoad asd asdaskdhsajkdhsahdajskdhjasd' * 100000,"hola me amaghio" * 8,6)
-    print('started')
-    print(a)
-    s = open('temp.txt','a',encoding="utf-8")
-    s.write(a)
-    s.close()
+# if __name__ == "__main__":
+#     print('started')
+#     a,_ = AE.professional_encryption('holame amigoad asd asdaskdhsajkdhsahdajskdhjasd' * 100000,"hola me amaghio" * 8,6)
+#     print('started')
+#     print(a)
+#     s = open('temp.txt','a',encoding="utf-8")
+#     s.write(a)
+#     s.close()

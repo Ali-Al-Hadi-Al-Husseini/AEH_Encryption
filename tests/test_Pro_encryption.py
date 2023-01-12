@@ -44,3 +44,5 @@ class TestProEncryption(unittest.TestCase):
             self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key,add,chars_list))
             self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key * 10,len(key) * 10,chars_list))
 
+if __name__ == '__main__':
+    unittest.main()
