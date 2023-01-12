@@ -1,10 +1,10 @@
-from Encryption_Tools.String_tools import String_tools
-from Encryption_Tools.Dict_tools import Dict_Tools
-from Encryption_Tools.keys_tools import Keys
+from .Encryption_Tools.String_tools import String_tools
+from .Encryption_Tools.Dict_tools import Dict_Tools
+from .Encryption_Tools.keys_tools import Keys
 
 
-from block.Block_tools import Block_Tools,Shuffle
-from Encryption_Tools.characters_list import get_characters_list
+from .block.Block_tools import Block_Tools,Shuffle
+from .Encryption_Tools.characters_list import get_characters_list
 from random import randrange
 
 
