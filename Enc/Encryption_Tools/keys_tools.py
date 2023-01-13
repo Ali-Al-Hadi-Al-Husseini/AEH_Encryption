@@ -1,4 +1,4 @@
-from characters_list import get_characters_list
+from .characters_list import get_characters_list
 
 from numpy import array,empty
 from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
