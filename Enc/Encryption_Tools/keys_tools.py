@@ -1,15 +1,40 @@
 from .characters_list import get_characters_list
 
 from numpy import array,empty
-from hashlib import sha256
-
+from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
+import hashlib
 
 class Keys:
 
     @classmethod
-    def convert_to_hash(cls,txt):
+    def str_to_sha256(cls,txt:str) -> str:
         return sha256(txt.encode()).hexdigest()
+    @classmethod
+    def str_to_sha3_256(cls,txt:str) -> str:
+        return sha3_256(txt.encode()).hexdigest()
 
+    @classmethod
+    def str_to_md5_sha3_512(cls,txt:str) -> str:
+        txt = sha3_512(txt.encode()).hexdigest()
+
+        return md5(txt[:len(txt)].encode()).hexdigest() + md5(txt[len(txt):].encode()).hexdigest()
+
+    @classmethod
+    def str_to_shake_256(cls,txt:str) -> str:
+        return shake_256(txt.encode()).hexdigest(32)
+
+    @classmethod
+    def str_to_blake2s(cls,txt:str) -> str:
+        return blake2s(txt.encode()).hexdigest()
+
+    @classmethod
+    def convert_to_hash(cls,txt):
+        txt = (cls.str_to_shake_256(txt))
+        txt = (cls.str_to_sha256(txt))
+        txt = (cls.str_to_md5_sha3_512(txt))
+        txt = (cls.str_to_blake2s(txt))
+        txt = (cls.str_to_sha3_256(txt))
+        return txt
 
     @classmethod
     def create_list(cls, Key, size,add_to_half = 1):

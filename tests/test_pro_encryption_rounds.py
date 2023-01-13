@@ -1,4 +1,4 @@
-from Enc import AE as ae
+from enc import AE as ae
 from unittest import TestCase
 
 
@@ -41,8 +41,7 @@ class TestProEncryption(TestCase):
             self.assertEqual(txt,decoded)
 
         for txt,key,add,rounds in self.test_case_fail_decrypt:
-            print("???????????????????????????????????????????/")
-            print(key)
+
             self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds (txt,key,add,chars_list,rounds))
             self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds(txt,key * 10,len(key) * 10,chars_list))
 
