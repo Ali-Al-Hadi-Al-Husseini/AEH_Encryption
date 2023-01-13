@@ -2,7 +2,6 @@ from .characters_list import get_characters_list
 
 from numpy import array,empty
 from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
-import hashlib
 
 class Keys:
 
@@ -30,11 +29,30 @@ class Keys:
     @classmethod
     def convert_to_hash(cls,txt):
         txt = (cls.str_to_shake_256(txt))
-        txt = (cls.str_to_sha256(txt))
         txt = (cls.str_to_md5_sha3_512(txt))
         txt = (cls.str_to_blake2s(txt))
         txt = (cls.str_to_sha3_256(txt))
+        txt = (cls.str_to_sha256(txt))
         return txt
+
+    @classmethod
+    def get_hash_funcs(cls):
+        return ['str_to_shake_256','str_to_md5_sha3_512' , 'str_to_blake2s','str_to_sha3_256','str_to_sha256']
+
+    @classmethod
+    def random_convert_to_hash(cls,hash_funcs):
+
+        def convert_to_hash(txt):
+            for hash_func_name in hash_funcs:
+                if not hasattr(cls,hash_func_name):
+                    raise KeyError(f"Hash function name must either implmented into Keys classs or  be one of the following {cls.get_hash_funcs()}")
+
+                hash_func = getattr(cls,hash_func_name)
+                txt = hash_func(txt)
+            return txt 
+    
+        return convert_to_hash
+
 
     @classmethod
     def create_list(cls, Key, size,add_to_half = 1):
