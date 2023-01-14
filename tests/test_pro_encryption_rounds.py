@@ -1,5 +1,5 @@
 from enc import AE as ae
-from unittest import TestCase
+from unittest import TestCase, main
 
 
 class TestProEncryption(TestCase):
@@ -25,7 +25,7 @@ class TestProEncryption(TestCase):
 
     def test_professional_block_encryption_rounds(self):
         for txt,key,add,rounds in self.test_cases:
-            encoded, chars = ae.professional_block_encryption_rounds(txt,key,add,rounds)
+            encoded, chars,hash_funcs = ae.professional_block_encryption_rounds(txt,key,add,rounds)
             self.test_chars = chars
             self.assertNotEqual(encoded,txt)
 
@@ -36,12 +36,14 @@ class TestProEncryption(TestCase):
     def test_professional_block_decryption_rounds(self):
         chars_list = []
         for txt,key,add,rounds in self.test_cases:
-            encoded, chars_list = ae.professional_block_encryption_rounds(txt,key,add,rounds)
-            decoded =  ae.professional_block_decryption_rounds(encoded,key,add,chars_list,rounds)
+            encoded, chars_list ,hash_funcs= ae.professional_block_encryption_rounds(txt,key,add,rounds)
+            decoded =  ae.professional_block_decryption_rounds(encoded,key,add,chars_list,hash_funcs,rounds)
             self.assertEqual(txt,decoded)
 
         for txt,key,add,rounds in self.test_case_fail_decrypt:
 
-            self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds (txt,key,add,chars_list,rounds))
-            self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds(txt,key * 10,len(key) * 10,chars_list))
+            self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds (txt,key,add,chars_list,hash_funcs,rounds))
+            self.assertRaises(ValueError,lambda: ae.professional_block_decryption_rounds(txt,key * 10,len(key) * 10,hash_funcs,chars_list))
 
+if __name__ == '__main__':
+    main()

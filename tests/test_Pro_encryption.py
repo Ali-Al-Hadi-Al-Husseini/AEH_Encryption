@@ -25,7 +25,7 @@ class TestProEncryption(unittest.TestCase):
 
     def test_professional_encryption(self):
         for txt,key,add in self.test_cases:
-            encoded, chars = ae.professional_encryption(txt,key,add)
+            encoded, chars,hash_funcs = ae.professional_encryption(txt,key,add)
             self.test_chars = chars
             self.assertNotEqual(encoded,txt)
 
@@ -36,13 +36,13 @@ class TestProEncryption(unittest.TestCase):
     def test_professional_decryption(self):
         chars_list = []
         for txt,key,add in self.test_cases:
-            encoded, chars_list = ae.professional_encryption(txt,key,add)
-            decoded =  ae.professional_decryption(encoded,key,add,chars_list)
+            encoded, chars_list,hash_funcs = ae.professional_encryption(txt,key,add)
+            decoded =  ae.professional_decryption(encoded,key,add,chars_list,hash_funcs)
             self.assertEqual(txt,decoded)
 
         for txt,key,add in self.test_case_fail_decrypt:
-            self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key,add,chars_list))
-            self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key * 10,len(key) * 10,chars_list))
+            self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key,add,chars_list,hash_funcs))
+            self.assertRaises(ValueError,lambda: ae.professional_decryption(txt,key * 10,len(key) * 10,chars_list,hash_funcs))
 
 if __name__ == '__main__':
     unittest.main()
