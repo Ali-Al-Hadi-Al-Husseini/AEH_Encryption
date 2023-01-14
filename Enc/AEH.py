@@ -277,14 +277,17 @@ class AE:
         key_list = Keys.create_list(Keys.convert_to_hash(key),(rounds) * 64)
         temp = text
         chars_list = []
-        for idx in range(len(key_list)):
-            temp,chars = cls.professional_encryption(temp,key_list[idx],add_to_hash_half)
-            chars_list.append(chars)
+        hash_funcs = []
 
-        return temp ,chars_list
+        for idx in range(len(key_list)):
+            temp,chars, hash_func = cls.professional_encryption(temp,key_list[idx],add_to_hash_half)
+            chars_list.append(chars)
+            hash_funcs.append(hash_func)
+
+        return temp ,chars_list,hash_funcs
 
     @classmethod
-    def professional_block_decryption_rounds(cls,text: str,key: str,add_to_hash_half: int,characters_list: list,rounds=6):
+    def professional_block_decryption_rounds(cls,text: str,key: str,add_to_hash_half: int,characters_list: list,hash_funcs,rounds=6):
         if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
 
@@ -292,7 +295,7 @@ class AE:
         temp = text
 
         for idx in range(len(key_list)):
-            temp = cls.professional_decryption(temp,key_list[len(key_list)-1-idx],add_to_hash_half,characters_list[len(characters_list)-1-idx])
+            temp = cls.professional_decryption(temp,key_list[len(key_list)-1-idx],add_to_hash_half,characters_list[len(characters_list)-1-idx],hash_funcs[len(characters_list)-1-idx])
         
         return temp
 
