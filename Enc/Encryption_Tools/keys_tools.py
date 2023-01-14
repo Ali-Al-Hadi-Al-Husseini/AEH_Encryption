@@ -42,7 +42,7 @@ class Keys:
     @classmethod
     def random_convert_to_hash(cls,hash_funcs):
 
-        def convert_to_hash(txt):
+        def convert_to_hash(txt): 
             for hash_func_name in hash_funcs:
                 if not hasattr(cls,hash_func_name):
                     raise KeyError(f"Hash function name must either implmented into Keys classs or  be one of the following {cls.get_hash_funcs()}")
@@ -54,7 +54,7 @@ class Keys:
         return convert_to_hash
 
 
-    @classmethod
+    @classmethod 
     def create_list(cls, Key, size,add_to_half = 1):
         keys = array([Key])
         for _ in range(get_nearist_2_power_until_64(size)):

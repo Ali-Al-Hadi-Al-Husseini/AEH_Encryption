@@ -149,6 +149,15 @@ class Shuffle:
 
         return new_nums
 
+    @classmethod
+    def list_shuffle(cls, array, key):
+        new_array = [None for _ in array]
+        row_shifts = cls.generate_shuffle_list(len(array) * 2 , len(array), key)
+
+        for idx in range(len(array)):
+            new_array[idx] = array[row_shifts[idx]]
+
+        return new_array
 
     @classmethod
     def shuffle(cls, txt, key):

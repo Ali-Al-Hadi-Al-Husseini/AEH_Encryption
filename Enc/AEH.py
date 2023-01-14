@@ -192,7 +192,7 @@ class AE:
 
     
     @classmethod
-    def professional_encryption(cls,text: str,key: str,add_to_hash_half: int,convert_to_hash = Keys.convert_to_hash):
+    def professional_encryption(cls,text: str,key: str,add_to_hash_half: int):
         if len(key) < 64 : 
             raise ValueError("Key is to Short")
 
@@ -204,14 +204,17 @@ class AE:
                 text+= "%"
 
         size = len(text) +((len(text) % 64) - 64 )
-        hashed_key = convert_to_hash(key)
+        hashed_key = Keys.convert_to_hash(key)
 
         
         _,key_list = Keys.create_hash_list(hashed_key, size, add_to_hash_half)
         character_list =  Shuffle.shuffle(get_characters_list(),key_list[randrange(0,len(key_list))])
 
+        random_convert_to_hash_list = Shuffle.list_shuffle(Keys.get_hash_funcs(),key_list[randrange(0,len(key_list))])
+        convert_to_hash = Keys.random_convert_to_hash(random_convert_to_hash_list)
+
         new_key = hashed_key + character_list
-        hashed_key = Keys.convert_to_hash(new_key)
+        hashed_key = convert_to_hash(new_key)
 
         _,key_list = Keys.create_hash_list(hashed_key, size, add_to_hash_half)
 
@@ -230,17 +233,19 @@ class AE:
         
         result = list(Block_Tools.connect_blocks(blocks))
 
-        return "".join(result), character_list
+        return "".join(result), character_list,random_convert_to_hash_list
 
     @classmethod
-    def professional_decryption(cls,text: str,key: str,add_to_hash_half: int,character_list: list, convert_to_hash = Keys.convert_to_hash):
+    def professional_decryption(cls,text: str,key: str,add_to_hash_half: int,character_list: list, random_convert_to_hash_list):
         if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length on the key divided by 4")
 
         size = len(text) +((len(text) % 64) - 64 )
         hashed_key = Keys.convert_to_hash(key)
         new_key = hashed_key + character_list
-        hashed_key = Keys.convert_to_hash(new_key)
+
+        convert_to_hash = Keys.random_convert_to_hash(random_convert_to_hash_list)
+        hashed_key = convert_to_hash(new_key)
 
         _,key_list  =Keys.create_hash_list(hashed_key, size, add_to_hash_half)
 
