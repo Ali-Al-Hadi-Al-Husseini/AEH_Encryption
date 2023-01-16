@@ -1,0 +1,2 @@
+[tool.mutmut]
+paths_to_mutate = ["Enc/AEH.py","Enc/block/Block_tools.py","Enc/Encryption_Tools/characters_list.py","Enc/Encryption_Tools/Dict_tools.py","Enc/Encryption_Tools/keys_tools.py","Enc/Encryption_Tools/String_tools.py"]
