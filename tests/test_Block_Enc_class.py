@@ -158,7 +158,13 @@ class TestBlockClass(TestCase):
             self.assertEqual(String_tools.string_bit_shift(result,self.dict1,self.dict2,shift,False),txt)
 
         for txt,shift in test_cases_error:
-            self.assertRaises(TypeError, lambda: String_tools.string_bit_shift(txt,self.dict1,self.dict2,shift))
+            try:
+                String_tools.string_bit_shift(txt,self.dict1,self.dict2,shift)
+                self.assertTrue(False)
+
+            except Exception as excp :
+                self.assertRaises(TypeError,type(excp))
+                self.assertEqual(excp.args[0],"String should be str  and shiftnum should be int")
                 
                 
 if __name__ == "__main__":
