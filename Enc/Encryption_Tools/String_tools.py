@@ -27,11 +27,12 @@ class String_tools:
             raise TypeError("String should be str  and shiftnum should be int")
 
         num_list = [str(bin(dict_2[char]))[2:] for char in string]
+        byte_length = 8
 
 
         for idx,num in enumerate(num_list):
-            if  len(num) < 8:
-                diff = 8 - len(num) 
+            if  len(num) < byte_length:
+                diff = byte_length - len(num) 
                 adding = "".join(["0" for _ in range(diff)])
                 adding += num
                 num_list[idx] = adding
