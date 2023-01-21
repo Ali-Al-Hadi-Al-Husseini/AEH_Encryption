@@ -163,7 +163,7 @@ class TestBlockClass(TestCase):
                 self.assertTrue(False)
 
             except Exception as excp :
-                self.assertRaises(TypeError,type(excp))
+                self.assertEqual(TypeError,type(excp))
                 self.assertEqual(excp.args[0],"String should be str  and shiftnum should be int")
                 
                 
