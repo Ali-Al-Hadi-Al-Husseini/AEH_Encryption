@@ -1,6 +1,6 @@
 from enc import *
 from testing_utils import *
-from unittest import TestCase
+from unittest import TestCase, main
 
 
 
@@ -56,13 +56,18 @@ class TestBlockClass(TestCase):
                 ("abasdcd","qwer"),
                 ('1234567a89fafasfsaf','987654asdas321'),
                 ('x',''),
-                ('h14g823hsadd','0hmdqt7')
+                ('h14g823hsadd','0hmdqt7'),
     
         ]       
 
         for txt,key in test_cases:
-            with self.assertRaises(ValueError):
-                String_tools    .xor_str(b(txt),key,self.dict1,self.dict2)
+            try:
+                String_tools.xor_str(b(txt),key,self.dict1,self.dict2)
+                self.assertTrue(False)
+
+            except Exception as excp:
+                self.assertEqual(type(excp),ValueError)
+                self.assertEqual(excp.args[0],'Text and key should be the same length in xor_str')
 
     def test_xor_block(self):
         for i in range(1,3):
@@ -156,3 +161,5 @@ class TestBlockClass(TestCase):
             self.assertRaises(TypeError, lambda: String_tools.string_bit_shift(txt,self.dict1,self.dict2,shift))
                 
                 
+if __name__ == "__main__":
+    main()
