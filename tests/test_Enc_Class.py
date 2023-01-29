@@ -1,5 +1,5 @@
 from enc import  *
-from testing_utils import get_nearist_2_power,get_nearist_2_power_until_64
+from testing_utils import get_nearist_2_power,get_nearist_2_power_until_64,get_char_frequencies
 import unittest
 
 
@@ -108,6 +108,10 @@ class TestEncClass(unittest.TestCase):
         test_cases = [
                 (" aslfkasjl sadsfasf fsafasf as,skmp op ",'124asda'),
                 ("Lorem opsium man how are you there and not here a\but are you not anywhere",'@12/13casd'),
+                ("abcsd" * 7, "my_password_123"),
+                ("123456789" * 9, "my_password_123"),
+                ("jlkmnopqwertyuiop" * 5, "my_#$%^_123"),
+
                 ('12345r',"12"),
                 ('','')
         ]
@@ -115,8 +119,9 @@ class TestEncClass(unittest.TestCase):
         for txt, key in test_cases:
             shuffled  = Shuffle.shuffle(txt,Keys.convert_to_hash(key))
 
-            self.assertTrue(len(txt) == len(shuffled))
+            # self.assertTrue(len(txt) == len(shuffled))
             self.assertTrue(txt != shuffled or txt == '')
+            self.assertEqual(get_char_frequencies(shuffled),get_char_frequencies(txt))
 
             txt_set = set(list(txt))
 
