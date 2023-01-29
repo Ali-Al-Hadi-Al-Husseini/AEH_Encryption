@@ -82,3 +82,15 @@ class TestTestingUtils(TestCase):
 
         for num, expected_result in test_cases:
             self.assertEqual(expected_result,get_nearist_2_power(num) )
+
+    def test_get_char_frequencies(self):
+        test_cases = [
+            ("abcdeqwerty","qwertyabcde"),
+            ("1234567890","0936841257"),
+            ("123abc789jkl","abc17jkl2389"),
+            ("2abcdeq1wer3ty","abcde123qwerty"),
+
+        ]
+
+        for txt1, txt2 in test_cases:
+            self.assertEqual(get_char_frequencies(txt1),get_char_frequencies(txt2))
