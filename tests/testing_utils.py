@@ -52,3 +52,13 @@ def get_nearist_2_power_until_64(num):
         num //= 2
         counter += 1
     return 2 ** counter 
+
+def get_char_frequencies(string):
+    char_frequencies = {}
+
+    for _char in string:
+        if _char not in char_frequencies:
+            char_frequencies[_char] = 0
+        char_frequencies[_char] += 1
+
+    return char_frequencies
