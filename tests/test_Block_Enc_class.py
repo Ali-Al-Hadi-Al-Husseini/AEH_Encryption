@@ -116,7 +116,10 @@ class TestBlockClass(TestCase):
 
     def test_string_shift(self):
         test_cases = [
-                ('abcd',2,'cdab'),
+                ('abcd', 1, 'dabc'),
+                ('abcd', 2, 'cdab'),
+                ('abcd', 3, 'bcda'),
+                ('abcd', 4, 'abcd'),
                 ('123456789',4,'678912345'),
                 ('hola_myamigo',19,'myamigohola_'),
                 ('',3,'')
