@@ -8,15 +8,12 @@ class String_tools:
         if len(txt) > len(key):
             raise ValueError('Text and key should be the same length in xor_str')
 
-        res = empty((len(txt)),dtype='<U2')
-        j = 0
-
+        xor_result = empty((len(txt)),dtype='<U2')
 
         for idx in range(len(txt)):
-            res[j] = d1[ d2[txt[idx]] ^ d2[key[idx]]]
-            j += 1
+            xor_result[idx] = d1[ d2[txt[idx]] ^ d2[key[idx]]]
 
-        result = ''.join(res)
+        result = ''.join(xor_result)
         block.bytes =  result 
         return result
 
