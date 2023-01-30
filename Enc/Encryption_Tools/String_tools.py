@@ -33,8 +33,7 @@ class String_tools:
         for idx,num in enumerate(num_list):
             if  len(num) < byte_length:
                 diff = byte_length - len(num) 
-                adding = "".join(["0" for _ in range(diff)])
-                adding += num
+                adding = "0" * diff + num
                 num_list[idx] = adding
     
         byte_str = "".join(num_list)
@@ -54,20 +53,18 @@ class String_tools:
 
     @classmethod
     def string_shift(cls,string,shift_num ):
-        shift_num %= len(string) if len(string) > 0 else 1
-        shift = len(string)- shift_num
+        shift_num %= 1 if len(string) < 1  else len(string)
+        shift = len(string) - shift_num
 
-        shifted_string = string[shift:]
-        shifted_string += string[:shift]
+        shifted_string = string[shift:] + string[:shift]
 
         return shifted_string
 
 
     @classmethod
     def string_un_shift(cls,string,shift_num):
-        shift_num %= len(string) if len(string) > 0 else 1
+        shift_num %= 1 if len(string) < 1 else len(string)
         
-        unshifted_string = string[shift_num:]
-        unshifted_string += string[:shift_num]
+        unshifted_string = string[shift_num:] + string[:shift_num] 
 
         return unshifted_string
