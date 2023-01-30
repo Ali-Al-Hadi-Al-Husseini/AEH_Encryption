@@ -274,7 +274,14 @@ class AE:
         if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
 
-        key_list = Keys.create_list(Keys.convert_to_hash(key),(rounds) * 64)
+
+        start_key =Keys.convert_to_hash(key * (rounds + add_to_hash_half))
+        random_convert_to_hash_list = Shuffle.list_shuffle(Keys.get_hash_funcs(), start_key)
+        convert_to_hash = Keys.random_convert_to_hash(random_convert_to_hash_list)
+
+        key_list = Keys.create_list(convert_to_hash(start_key * (rounds + add_to_hash_half)),(rounds) * 64)
+
+
         temp = text
         chars_list = []
         hash_funcs = []
@@ -291,7 +298,11 @@ class AE:
         if 0  > add_to_hash_half  or  add_to_hash_half > (len(key) // 4): 
             raise ValueError("add to hash half number should be between 1 and the length of the key divided by 4")
 
-        key_list = Keys.create_list(Keys.convert_to_hash(key),(rounds) * 64)
+        start_key =Keys.convert_to_hash(key * (rounds + add_to_hash_half))
+        random_convert_to_hash_list = Shuffle.list_shuffle(Keys.get_hash_funcs(),start_key)
+        convert_to_hash = Keys.random_convert_to_hash(random_convert_to_hash_list)
+
+        key_list = Keys.create_list(convert_to_hash(start_key * (rounds + add_to_hash_half)),(rounds) * 64)
         temp = text
 
         for idx in range(len(key_list)):
