@@ -91,10 +91,10 @@ class Keys:
     def create_hash_list(cls, key, size,add_to_half = 1):
         keys_list = cls.create_list(key, size * 5,add_to_half)
         result = "".join(keys_list)
-        return array([ord(_char) for _char in result]),keys_list
+        return array([ord(_char) for _char in result]), keys_list
 
     """ takes the size of the text that to be encrypted  and takes the key to genrate keylist using the class
-     method create_hash_list adn then take  the  series of hashes and pass it to the nums classmethod"""
+     method create_hash_list and then take  the  series of hashes and pass it to the nums classmethod"""
     @classmethod
     def generate_keylist(cls, txt_size, key, add_to_half = 1,case="NONE"):
         hash_keys,_ = cls.create_hash_list(key, txt_size,add_to_half)
@@ -118,30 +118,30 @@ class Keys:
             raise ValueError("Templist should  consist of at least 5 items")
 
         try:
-            num1 += int((((temp_list[2] ** temp_list[1]) +
+            num1 += int((((temp_list[2] ** temp_list[1]) ^
                         temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
             # in cases where temp_list[3] can be zero so thats why we used try/execpt here
             if Case != 'NONE':
                 if num1 == 0:
                     num1 = int(
-                        (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+                        (((temp_list[1] ** temp_list[3]) + temp_list[2]) ^ temp_list[4]) // temp_list[0]) % len_chars
 
                 if num1 == 0:
                     num1 = int((  (temp_list[0] + temp_list[1] +
-                            temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+                            temp_list[2] ) ** (temp_list[3] ^ temp_list[4])) // 3) % len_chars
 
 
         except ZeroDivisionError:
             # provides two alternative number if num1 has an error
             try:
                 num1 = int(
-                    (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+                    (((temp_list[1] ** temp_list[3]) ^ temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
             except ZeroDivisionError:
                 """num1 cann't have an error because it uses only addtion it can only be 0 if all the i
                 tems in temp_list is zero which is rare to happen """
 
-                num1 = int((  (temp_list[0] + temp_list[1] +
+                num1 = int((  (temp_list[0] ^ temp_list[1] ^
                         temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
 
         return num1
