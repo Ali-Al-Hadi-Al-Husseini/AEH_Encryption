@@ -77,15 +77,12 @@ class Keys:
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
     def create_list_helper(cls, keys, add_to_half=1 ):
-        new_keys = empty((len(keys) * 2),dtype='<U65')
-        idx = 0 
+        new_keys = empty(len(keys) * 2, dtype='<U65')
 
-        for key in keys:
+        for idx, key in enumerate(keys):
             left,right = cls.split_and_hash(key, add_to_half)
             new_keys[idx] = left
-            idx+=1 
-            new_keys[idx] = right
-            idx += 1 
+            new_keys[-(idx + 1)] = right
 
         return new_keys
 
