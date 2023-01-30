@@ -28,11 +28,11 @@ class Keys:
 
     @classmethod
     def convert_to_hash(cls,txt):
-        txt = (cls.str_to_shake_256(txt))
-        txt = (cls.str_to_md5_sha3_512(txt))
-        txt = (cls.str_to_blake2s(txt))
-        txt = (cls.str_to_sha3_256(txt))
-        txt = (cls.str_to_sha256(txt))
+        txt = cls.str_to_shake_256(txt)
+        txt = cls.str_to_md5_sha3_512(txt)
+        txt = cls.str_to_blake2s(txt)
+        txt = cls.str_to_sha3_256(txt)
+        txt = cls.str_to_sha256(txt)
         return txt
 
     @classmethod
@@ -109,41 +109,37 @@ class Keys:
         num1 = 0
         temp_list = [ int(num) for num in temp_list]
 
-        if len(temp_list) >= 4:
-            try:
-                num1 += int((((temp_list[2] ** temp_list[1]) +
-                            temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
-                # in cases where temp_list[3] can be zero so thats why we used try/execpt here
-                if Case != 'NONE':
-                    if num1 == 0:
-                        num1 = int(
-                            (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+        if len(temp_list) < 4:
+            raise ValueError("Templist should be consist of at least 5 items")
 
-                    if num1 == 0:
-                        num1 = int((  (temp_list[0] + temp_list[1] +
-                                temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
-
-
-            except ZeroDivisionError:
-                # provides two alternative number if num1 has an error
-                try:
+        try:
+            num1 += int((((temp_list[2] ** temp_list[1]) +
+                        temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
+            # in cases where temp_list[3] can be zero so thats why we used try/execpt here
+            if Case != 'NONE':
+                if num1 == 0:
                     num1 = int(
                         (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
-                except ZeroDivisionError:
-                    """num1 cann't have an error because it uses only addtion it can only be 0 if all the i
-                    tems in temp_list is zero which is rare to happen """
-
+                if num1 == 0:
                     num1 = int((  (temp_list[0] + temp_list[1] +
                             temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
 
-            return num1
 
-        else:
-            raise ValueError("Templist should be consist of at least 5 items")
-    
+        except ZeroDivisionError:
+            # provides two alternative number if num1 has an error
+            try:
+                num1 = int(
+                    (((temp_list[1] ** temp_list[3]) + temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
 
-    
+            except ZeroDivisionError:
+                """num1 cann't have an error because it uses only addtion it can only be 0 if all the i
+                tems in temp_list is zero which is rare to happen """
+
+                num1 = int((  (temp_list[0] + temp_list[1] +
+                        temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+
+        return num1
 
 def get_nearist_2_power_until_64(num):
     counter = 0
