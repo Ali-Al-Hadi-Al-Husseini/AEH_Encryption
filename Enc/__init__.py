@@ -13,4 +13,4 @@ from .Encryption_Tools.keys_tools import Keys
 from .Encryption_Tools.String_tools import String_tools 
 from .AEH import AE
 
-__all__ = ['Block_Tools','Shuffle','Block','get_characters_list','Dict_Tools','Keys','String_tools','AE']
+__all__ = ['Block_Tools','Shuffle','Block','get_characters_list','Dict_Tools','Keys','String_tools','AE','get_characters_list']
