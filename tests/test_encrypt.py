@@ -23,9 +23,16 @@ class TestEncrypt(unittest.TestCase):
                     ('Where there is smoke, there is fire', 'sm0kE_fIrE_123'),
                     ('The early bird catches the worm, but the second mouse gets the cheese', 'eArLy_b1rd_wrm_sEcndMousE_chEese'),
                     ('You can lead a horse to water, but you can’t make it drink', 'h0rsE_wAtEr_dr1nk_2022'),
-                    ('Practice makes perfect', 'prActice_pErfEct_123'),
-                    ('Rome was not built in a day', 'rOme_bu1lt_day_2023'),
-                    ('Time heals all wounds', 't1me_hEals_w0unds_2021')
+                    ('Practice makes perfect' * 96, 'prActice_pErfEct_123'),
+                    ('Rome was not built in a day' * 17, 'rOme_bu1lt_day_2023'),
+                    ('Time heals all wounds'* 10, 't1me_hEals_w0unds_2021'),
+                    ('Success is not final, failure is not fatal: it is the courage to continue that counts' * 2, 'sUcCess_fAilure_cOurage_c0ntinue'),
+                    ('Every cloud has a silver lining' * 3, 'cl0ud_s1lverL1ning_2021'),
+                    ('Actions speak louder than words'* 11, 'acti0ns_speak_w0rds_2023'),
+                    ('Good things come to those who wait'* 3, 'g00d_th1ngs_wait_2022'),
+                    ('Where there’s life, there’s hope', 'l1fe_h0pe_2023'),
+                    ('Necessity is the mother of invention', 'necess1ty_m0ther_inventi0n_2022'),
+                    ('A bird in the hand is worth two in the bush', 'b1rd_hand_tw0_bush_2021')                    
         ]
 
     def test_Encrypt(self):
