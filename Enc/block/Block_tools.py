@@ -5,6 +5,12 @@ from multiprocessing import Process
 
 from numpy import empty
 
+from math import log
+
+from ..Encryption_Tools.characters_list import get_characters_list
+
+BITS_SIZE = int(log(len(get_characters_list()), 2))
+
 class Block:
     def __init__(self,bytes):
         self.bytes = bytes
@@ -211,10 +217,10 @@ class Shuffle:
 
         for char in txt:
             temp = bin(dict2[char])[2:]  
-            temp = ''.join(['0' for _ in range(len(temp),8)]) + temp
+            temp = ''.join(['0' for _ in range(len(temp),BITS_SIZE)]) + temp
             new_txt.append(temp)    
 
-        shuffled_bytes =  Block_Tools.split_to_parts(cls.shuffle(''.join(new_txt),key),8)
+        shuffled_bytes =  Block_Tools.split_to_parts(cls.shuffle(''.join(new_txt),key),BITS_SIZE)
 
         return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
 
@@ -225,8 +231,8 @@ class Shuffle:
 
         for char in txt:
             temp = bin(dict2[char])[2:]  
-            temp = ''.join(['0' for _ in range(len(temp),8)]) + temp
+            temp = ''.join(['0' for _ in range(len(temp), BITS_SIZE)]) + temp
             new_txt.append(temp)  
 
-        shuffled_bytes =  Block_Tools.split_to_parts(cls.un_shuffle(''.join(new_txt),key),8)
+        shuffled_bytes =  Block_Tools.split_to_parts(cls.un_shuffle(''.join(new_txt),key), BITS_SIZE)
         return ''.join(dict1[int(block.bytes,2)] for block in shuffled_bytes)
