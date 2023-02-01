@@ -1,5 +1,9 @@
 from numpy import empty
+from math import log
 
+from .characters_list import get_characters_list
+
+BITS_SIZE = int(log(len(get_characters_list()), 2))
 
 class String_tools:
     @classmethod
@@ -24,26 +28,27 @@ class String_tools:
             raise TypeError("String should be str  and shiftnum should be int")
 
         num_list = [str(bin(dict_2[char]))[2:] for char in string]
-        byte_length = 8
 
 
         for idx,num in enumerate(num_list):
-            if  len(num) < byte_length:
-                diff = byte_length - len(num) 
+            if  len(num) < BITS_SIZE:
+                diff = BITS_SIZE - len(num) 
                 adding = "0" * diff + num
                 num_list[idx] = adding
     
         byte_str = "".join(num_list)
         
+
         if Encrypt:
             byte_str = cls.string_shift(byte_str,shift_num)
         else:
             byte_str = cls.string_un_shift(byte_str,shift_num)
 
-        byte_list = empty((len(byte_str) // 8),dtype="<U9")
 
-        for idx in range(len(byte_str) // 8):
-            byte_list[idx] = byte_str[idx * 8:(idx+1) * 8]
+        byte_list = empty((len(byte_str) // BITS_SIZE),dtype=f"<U{BITS_SIZE + 1 }")
+
+        for idx in range(len(byte_str) // BITS_SIZE):
+            byte_list[idx] = byte_str[idx * BITS_SIZE:(idx+1) * BITS_SIZE]
         
         return "".join([dict_1[int(byt,2)] for byt in byte_list])
 
