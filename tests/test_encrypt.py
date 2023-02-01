@@ -1,11 +1,13 @@
 from testing_utils import *
 from enc import AE as ae
+from enc import get_characters_list
 import unittest
 
 
 class TestEncrypt(unittest.TestCase):
 
     def setUp(self) -> None:
+        self.len_char_list = len(get_characters_list())
         self.test_cases = [
                     ('Lorem here and lorem there lorem lorem everywhere ' * 9,"my_password_123"),
                     ("123567", 'lt77ma@345'),
@@ -37,15 +39,22 @@ class TestEncrypt(unittest.TestCase):
 
     def test_Encrypt(self):
         for txt, key in self.test_cases:
+            txt *= 3
             encrypted = ae.Encrypt(txt,key)
-            print(encrypted)
+            occurrences  = get_char_frequencies(encrypted).values()
+
+            """Check if the difference between the most and least occurring number is less than 4% of the total number of letters."""
+            self.assertTrue((max(occurrences) - min(occurrences)) <= sum(occurrences) * 0.04)
+            
+            self.assertEqual(len(encrypted)  , len(txt))
             self.assertNotEqual(encrypted, txt)
 
     def test_Decrypt(self):
         for txt, key in self.test_cases:
             encrypted = ae.Encrypt(txt,key)
             decrypted = ae.Decrypt(encrypted,key)
-            print(decrypted)
             self.assertEqual(decrypted, txt)
 
+if __name__ == "__main__":
+    unittest.main()
 
