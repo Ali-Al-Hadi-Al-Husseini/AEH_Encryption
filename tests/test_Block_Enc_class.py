@@ -114,6 +114,31 @@ class TestBlockClass(TestCase):
 
             self.assertEqual(blocks,Block_Tools.un_mix_blocks(mixed_blocks,key_list))
 
+    def test_mix_blocks_proc(self):
+        # adding more cases would take much time
+        for i in range(1,3):
+            un_joind,key_list = Keys.create_hash_list(self.hash, len(self.txt) +((len(self.txt) % i) - i ))
+            key_list = list(''.join(key_list))
+            key_list = ["".join(key_list[idx * i : (idx +1) * i]) for idx in range(len(key_list) // i)]
+            
+            blocks = Block_Tools.split_to_parts(self.txt,i)
+            mixed_blocks = Block_Tools.mix_blocks_process(blocks,key_list)
+
+            self.assertTrue(same_but_mixed(blocks,mixed_blocks))
+
+
+    def test_un_mix_blocks_proc(self):
+        # adding more cases would take much time
+        for i in range(1,3):
+            un_joind , key_list= Keys.create_hash_list(self.hash, len(self.txt) +((len(self.txt) % i) - i ))
+            key_list = list(''.join(key_list))
+            key_list = ["".join(key_list[idx * i : (idx +1) * i]) for idx in range(len(key_list) // i)]
+            
+            blocks = Block_Tools.split_to_parts(self.txt,i)
+            mixed_blocks = Block_Tools.mix_blocks_process(blocks,key_list)
+
+            self.assertEqual(blocks,Block_Tools.un_mix_blocks_process(mixed_blocks,key_list))
+            
     def test_string_shift(self):
         test_cases = [
                 ('abcd', 1, 'dabc'),
