@@ -5,11 +5,8 @@ from multiprocessing import Process
 
 from numpy import empty
 
-from math import log
+from ..Encryption_Tools.characters_list import  BITS_SIZE
 
-from ..Encryption_Tools.characters_list import get_characters_list
-
-BITS_SIZE = int(log(len(get_characters_list()), 2))
 
 class Block:
     def __init__(self,bytes):
