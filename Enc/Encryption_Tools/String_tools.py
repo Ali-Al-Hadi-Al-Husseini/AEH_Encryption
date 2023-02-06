@@ -1,9 +1,7 @@
 from numpy import empty
-from math import log
 
-from .characters_list import get_characters_list
+from .characters_list import BITS_SIZE
 
-BITS_SIZE = int(log(len(get_characters_list()), 2))
 
 class String_tools:
     @classmethod
