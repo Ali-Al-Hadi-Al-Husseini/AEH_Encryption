@@ -1,11 +1,13 @@
 from numpy import empty
+from typing import Dict
 
 from .characters_list import BITS_SIZE
 
 
 class String_tools:
+
     @classmethod
-    def xor_str(cls,block, key,d1, d2):
+    def xor_str(cls,block, key: str,d1: Dict[int,str], d2: Dict[str,int]):
         txt = block.bytes
         if len(txt) > len(key):
             raise ValueError('Text and key should be the same length in xor_str')
@@ -21,7 +23,7 @@ class String_tools:
 
 
     @classmethod
-    def string_bit_shift(cls,string,dict_1, dict_2,shift_num,Encrypt = True):
+    def string_bit_shift(cls,string: str, dict_1: Dict[int, str], dict_2: Dict[str,int], shift_num: int, Encrypt: bool = True) -> str:
         if type(string) != str or type(shift_num) != int: 
             raise TypeError("String should be str  and shiftnum should be int")
 
@@ -52,7 +54,7 @@ class String_tools:
 
 
     @classmethod
-    def string_shift(cls,string,shift_num ):
+    def string_shift(cls,string: str,shift_num: int)-> str:
         shift_num %= 1 if len(string) < 1  else len(string)
         shift = len(string) - shift_num
 
@@ -62,7 +64,7 @@ class String_tools:
 
 
     @classmethod
-    def string_un_shift(cls,string,shift_num):
+    def string_un_shift(cls,string: str, shift_num: int) -> str:
         shift_num %= 1 if len(string) < 1 else len(string)
         
         unshifted_string = string[shift_num:] + string[:shift_num] 
