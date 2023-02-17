@@ -1,8 +1,9 @@
 from .characters_list import get_characters_list
 
-from numpy import array,empty
+from numpy import array,empty,  ndarray
 from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
 
+from typing import List ,Callable
 class Keys:
 
     @classmethod
@@ -24,11 +25,11 @@ class Keys:
         return shake_256(txt.encode()).hexdigest(32)
 
     @classmethod
-    def str_to_blake2s(cls,txt:str) -> str:
+    def str_to_blake2s(cls,txt: str) -> str:
         return blake2s(txt.encode()).hexdigest()
 
     @classmethod
-    def convert_to_hash(cls,txt):
+    def convert_to_hash(cls,txt: str) -> str:
         txt = cls.str_to_shake_256(txt)
         txt = cls.str_to_md5_sha3_512(txt)
         txt = cls.str_to_blake2s(txt)
@@ -37,13 +38,13 @@ class Keys:
         return txt
 
     @classmethod
-    def get_hash_funcs(cls):
+    def get_hash_funcs(cls) -> List[str]:
         return ['str_to_shake_256','str_to_md5_sha3_512' , 'str_to_blake2s','str_to_sha3_256','str_to_sha256']
 
     @classmethod
-    def random_convert_to_hash(cls,hash_funcs):
+    def random_convert_to_hash(cls,hash_funcs: List[str]) -> callable[[str], str]:
 
-        def convert_to_hash(txt): 
+        def convert_to_hash(txt: str) -> str: 
             for hash_func_name in hash_funcs:
                 if not hasattr(cls,hash_func_name):
                     raise KeyError(f"Hash function name must either implmented into Keys classs or  be one of the following {cls.get_hash_funcs()}")
@@ -56,11 +57,11 @@ class Keys:
         return convert_to_hash
 
     @classmethod
-    def custom_convert_to_hash(cls,txt):
+    def custom_convert_to_hash(cls,txt: str) -> Callable[[str], str]:
         return cls.convert_to_hash(txt)
 
     @classmethod 
-    def create_list(cls, Key, size,add_to_half = 1):
+    def create_list(cls, Key: str, size:int, add_to_half: int  = 1) -> ndarray:
         keys = array([Key])
 
         for _ in range(get_nearist_2_power_until_64(size)):
@@ -70,13 +71,13 @@ class Keys:
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
-    def split_and_hash(cls, key,add_to_half = 1):
+    def split_and_hash(cls, key:str ,add_to_half:int = 1) -> List[str, str]:
         half_key = (len(key) // 2) + add_to_half
         return [cls.custom_convert_to_hash(key[half_key:]), cls.custom_convert_to_hash(key[:half_key])]
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
-    def create_list_helper(cls, keys, add_to_half=1 ):
+    def create_list_helper(cls, keys:str , add_to_half:int = 1) -> ndarray:
         new_keys = empty(len(keys) * 2, dtype='<U65')
 
         for idx, key in enumerate(keys):
@@ -88,7 +89,7 @@ class Keys:
 
     # write the  generated list from create_list_helper in a file called keys.txt
     @classmethod
-    def create_hash_list(cls, key, size,add_to_half = 1):
+    def create_hash_list(cls, key:str, size: int, add_to_half:int = 1) -> ndarray:
         keys_list = cls.create_list(key, size * 5,add_to_half)
         result = "".join(keys_list)
         return array([ord(_char) for _char in result]), keys_list
@@ -96,7 +97,7 @@ class Keys:
     """ takes the size of the text that to be encrypted  and takes the key to genrate keylist using the class
      method create_hash_list and then take  the  series of hashes and pass it to the nums classmethod"""
     @classmethod
-    def generate_keylist(cls, txt_size, key, add_to_half = 1,case="NONE"):
+    def generate_keylist(cls, txt_size: int, key: str, add_to_half:int = 1,case: str = "NONE") -> List[int]:
         hash_keys,_ = cls.create_hash_list(key, txt_size,add_to_half)
         num_list = []
 
@@ -108,7 +109,7 @@ class Keys:
 
     """ takes  a list of len 5 and genrate a number from it to pass it back to  generate_keylist """
     @classmethod
-    def generate_nums(cls, temp_list,Case='NONE'):
+    def generate_nums(cls, temp_list: List[int], Case: str ='NONE') -> int : 
 
         len_chars = len(get_characters_list())
         num1 = 0
@@ -146,7 +147,7 @@ class Keys:
 
         return num1
 
-def get_nearist_2_power_until_64(num):
+def get_nearist_2_power_until_64(num: int) -> int:
     counter = 0
     while num > 64 :
         num //= 2
