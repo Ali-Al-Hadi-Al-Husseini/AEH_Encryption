@@ -109,41 +109,41 @@ class Keys:
 
     """ takes  a list of len 5 and genrate a number from it to pass it back to  generate_keylist """
     @classmethod
-    def generate_nums(cls, temp_list: List[int], Case: str ='NONE') -> int : 
+    def generate_nums(cls, numbers_list: List[int], Case: str ='NONE') -> int : 
 
         len_chars = len(get_characters_list())
         num1 = 0
-        temp_list = [ int(num) for num in temp_list]
+        numbers_list = [ int(num) for num in numbers_list]
 
-        if len(temp_list) < 4:
+        if len(numbers_list) < 4:
             raise ValueError("Templist should  consist of at least 5 items")
 
         try:
-            num1 += int((((temp_list[2] ** temp_list[1]) ^
-                        temp_list[0]) * temp_list[4]) // temp_list[3]) % len_chars
-            # in cases where temp_list[3] can be zero so thats why we used try/execpt here
+            num1 += int((((numbers_list[2] ** numbers_list[1]) ^
+                        numbers_list[0]) * numbers_list[4]) // numbers_list[3]) % len_chars
+            # in cases where numbers_list[3] can be zero so thats why we used try/execpt here
             if Case != 'NONE':
                 if num1 == 0:
                     num1 = int(
-                        (((temp_list[1] ** temp_list[3]) + temp_list[2]) ^ temp_list[4]) // temp_list[0]) % len_chars
+                        (((numbers_list[1] ** numbers_list[3]) + numbers_list[2]) ^ numbers_list[4]) // numbers_list[0]) % len_chars
 
                 if num1 == 0:
-                    num1 = int((  (temp_list[0] + temp_list[1] +
-                            temp_list[2] ) ** (temp_list[3] ^ temp_list[4])) // 3) % len_chars
+                    num1 = int((  (numbers_list[0] + numbers_list[1] +
+                            numbers_list[2] ) ** (numbers_list[3] ^ numbers_list[4])) // 3) % len_chars
 
 
         except ZeroDivisionError:
             # provides two alternative number if num1 has an error
             try:
                 num1 = int(
-                    (((temp_list[1] ** temp_list[3]) ^ temp_list[2]) * temp_list[4]) // temp_list[0]) % len_chars
+                    (((numbers_list[1] ** numbers_list[3]) ^ numbers_list[2]) * numbers_list[4]) // numbers_list[0]) % len_chars
 
             except ZeroDivisionError:
                 """num1 cann't have an error because it uses only addtion it can only be 0 if all the i
-                tems in temp_list is zero which is rare to happen """
+                tems in numbers_list is zero which is rare to happen """
 
-                num1 = int((  (temp_list[0] ^ temp_list[1] ^
-                        temp_list[2] ) ** (temp_list[3] * temp_list[4])) // 3) % len_chars
+                num1 = int((  (numbers_list[0] ^ numbers_list[1] ^
+                        numbers_list[2] ) ** (numbers_list[3] * numbers_list[4])) // 3) % len_chars
 
         return num1
 
