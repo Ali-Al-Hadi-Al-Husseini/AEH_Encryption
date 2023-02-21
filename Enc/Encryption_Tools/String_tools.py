@@ -7,7 +7,7 @@ from .characters_list import BITS_SIZE
 class String_tools:
 
     @classmethod
-    def xor_str(cls,block, key: str,d1: Dict[int,str], d2: Dict[str,int]):
+    def xor_str(cls,block, key: str,d1: Dict[int,str], d2: Dict[str,int]) -> str:
         txt = block.bytes
         if len(txt) > len(key):
             raise ValueError('Text and key should be the same length in xor_str')
@@ -19,6 +19,7 @@ class String_tools:
 
         result = ''.join(xor_result)
         block.bytes =  result 
+
         return result
 
 
@@ -54,7 +55,7 @@ class String_tools:
 
 
     @classmethod
-    def string_shift(cls,string: str,shift_num: int)-> str:
+    def string_shift(cls,string: str,shift_num: int) -> str:
         shift_num %= 1 if len(string) < 1  else len(string)
         shift = len(string) - shift_num
 
