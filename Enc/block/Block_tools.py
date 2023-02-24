@@ -4,28 +4,29 @@ from ..Encryption_Tools.Dict_tools import Dict_Tools
 from multiprocessing import Process
 
 from numpy import empty
+from typing import List, Dict
 
 from ..Encryption_Tools.characters_list import  BITS_SIZE
 
 
 class Block:
-    def __init__(self,bytes):
+    def __init__(self,bytes: str) -> None:
         self.bytes = bytes
 
-    def mix(self,key):
+    def mix(self,key: str) -> None:
         self.bytes = Shuffle.shuffle_bin(self.bytes,key)
 
 
-    def un_mix(self,key):
+    def un_mix(self,key: str) -> None:
         self.bytes = Shuffle.un_shuffle_bin(self.bytes,key)
     
-    def __len__(self):
+    def __len__(self) -> None:
         return len(self.bytes)
 
 class Block_Tools:
 
     @classmethod
-    def split_to_parts(cls, text,block_size = 16):
+    def split_to_parts(cls, text: str, block_size: int = 16) -> List[Block]:
         blocks = []
         last_idx = 0
 
@@ -43,11 +44,11 @@ class Block_Tools:
         return blocks
 
     @classmethod
-    def connect_blocks(cls, blocks):
+    def connect_blocks(cls, blocks: List[Block]) -> str:
         return ''.join([block.bytes for block in blocks])
 
     @classmethod
-    def mix_blocks(cls, blocks, key_list):
+    def mix_blocks(cls, blocks: List[Block], key_list: List[str]) -> List[Block]:
 
         for idx  in range(len(blocks)):
             blocks[idx].mix(key_list[idx])
@@ -56,8 +57,9 @@ class Block_Tools:
 
 
     @classmethod
-    def un_mix_blocks(cls, blocks, key_list):
+    def un_mix_blocks(cls, blocks: List[Block], key_list: List[str]) -> List[Block]:
         blocks = cls.unmixblock(blocks,key_list[-1])
+
         for idx  in range(len(blocks)):
             blocks[idx].un_mix(key_list[idx])
 
@@ -65,7 +67,7 @@ class Block_Tools:
 
 
     @classmethod
-    def mixblock(cls,blocks,key):
+    def mixblock(cls,blocks: List[Block], key: str) -> List[Block]:
         row_shifts = Shuffle.generate_shuffle_list(len(blocks), len(blocks), key)
         aux_list = blocks[:]
 
@@ -76,7 +78,7 @@ class Block_Tools:
 
 
     @classmethod
-    def unmixblock(cls,blocks,key):
+    def unmixblock(cls,blocks: List[Block], key: str) -> List[Block]:
         row_shifts = Shuffle.generate_shuffle_list(len(blocks), len(blocks), key)
 
         aux_list = blocks[:]
@@ -88,7 +90,8 @@ class Block_Tools:
 
 
     @classmethod
-    def xor_blocks(cls,blocks,key_list,dict1,dict2):
+    def xor_blocks(cls,blocks: List[Block], key_list: List[Block], dict1: Dict[int,str], dict2: Dict[str,int]) -> None:
+
         for idx  in range(len(blocks)):
             String_tools.xor_str(blocks[idx],key_list[idx],dict1,dict2)
 
