@@ -42,7 +42,7 @@ class Keys:
         return ['str_to_shake_256','str_to_md5_sha3_512' , 'str_to_blake2s','str_to_sha3_256','str_to_sha256']
 
     @classmethod
-    def random_convert_to_hash(cls,hash_funcs: List[str]) -> callable[[str], str]:
+    def random_convert_to_hash(cls,hash_funcs: List[str]) -> Callable[[str], str]:
 
         def convert_to_hash(txt: str) -> str: 
             for hash_func_name in hash_funcs:
@@ -71,7 +71,7 @@ class Keys:
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
-    def split_and_hash(cls, key:str ,add_to_half:int = 1) -> List[str, str]:
+    def split_and_hash(cls, key:str ,add_to_half:int = 1) -> List[str]:
         half_key = (len(key) // 2) + add_to_half
         return [cls.custom_convert_to_hash(key[half_key:]), cls.custom_convert_to_hash(key[:half_key])]
 
