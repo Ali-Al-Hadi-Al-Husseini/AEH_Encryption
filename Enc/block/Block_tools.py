@@ -98,7 +98,7 @@ class Block_Tools:
 
 
     @classmethod
-    def mix_blocks_process(cls, blocks, key_list):
+    def mix_blocks_process(cls, blocks: List[Block], key_list: List[str]) -> List[Block]:
         processs = []
         for idx  in range(len(blocks)):
             process = Process(target=blocks[idx].mix,args=(key_list[idx],))
@@ -111,7 +111,7 @@ class Block_Tools:
         return cls.mixblock(blocks,key_list[-1])
 
     @classmethod
-    def un_mix_blocks_process(cls, blocks, key_list):
+    def un_mix_blocks_process(cls, blocks: List[Block], key_list: List[str]) -> List[Block]:
         processs = []
         blocks = cls.unmixblock(blocks,key_list[-1])
         for idx  in range(len(blocks)):
@@ -126,7 +126,7 @@ class Block_Tools:
         return blocks
 
     @classmethod
-    def xor_blocks_procsess(cls,blocks,key_list,dict1,dict2):
+    def xor_blocks_procsess(cls,blocks: List[Block], key_list: List[str], dict1,dict2) -> None: 
         processs = []
         for idx  in range(len(blocks)):
             process = Process(target=String_tools.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2))
@@ -156,7 +156,7 @@ class Shuffle:
         return new_nums
 
     @classmethod
-    def list_shuffle(cls, array, key):
+    def list_shuffle(cls, array: List, key: str)-> List:
         new_array = [None for _ in array]
         row_shifts = cls.generate_shuffle_list(len(array) * 2 , len(array), key)
 
