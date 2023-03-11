@@ -126,7 +126,7 @@ class Block_Tools:
         return blocks
 
     @classmethod
-    def xor_blocks_procsess(cls,blocks: List[Block], key_list: List[str], dict1,dict2) -> None: 
+    def xor_blocks_procsess(cls,blocks: List[Block], key_list: List[str], dict1, dict2) -> None: 
         processs = []
         for idx  in range(len(blocks)):
             process = Process(target=String_tools.xor_str,args=(blocks[idx],key_list[idx],dict1,dict2))
@@ -139,7 +139,7 @@ class Block_Tools:
 
 class Shuffle:
     @classmethod
-    def generate_shuffle_list(cls,len_txt,org_len,key):
+    def generate_shuffle_list(cls,len_txt: int ,org_len:int ,key: str ):
         
         new_nums = []
         nums = []
