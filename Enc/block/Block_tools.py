@@ -166,18 +166,18 @@ class Shuffle:
         return new_array
 
     @classmethod
-    def shuffle(cls, txt, key):
+    def shuffle(cls, txt: str, key: str)-> str :
         new_txt = empty(len(txt),dtype='<U2')
         row_shifts = cls.generate_shuffle_list(len(txt) * 2 , len(txt), key)
 
         for idx in range(len(txt)):
             new_txt[idx] = txt[row_shifts[idx]]
 
-        return ''.join(new_txt)
+        return cls.convert_to_str(new_txt)
 
 
     @classmethod
-    def un_shuffle(cls, txt, key):
+    def un_shuffle(cls, txt: str, key: str)-> str :
         shifts = cls.generate_shuffle_list(len(txt) * 2, len(txt) , key)
         new_list = empty(len(txt),dtype='<U2')
 
@@ -188,7 +188,7 @@ class Shuffle:
         
 
     @classmethod
-    def convert_to_str(cls,chars_list):
+    def convert_to_str(cls, chars_list: List[str]) -> str :
         return ''.join(chars_list)
 
     @classmethod
