@@ -1,4 +1,5 @@
 from .characters_list import get_characters_list
+from double_pendulum import double_pendulum
 
 from numpy import array,empty,  ndarray
 from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
@@ -71,9 +72,9 @@ class Keys:
 
     # this method take one parameter (hash as a string) and then returns the hashs of the two halfs of the key
     @classmethod
-    def split_and_hash(cls, key:str ,add_to_half:int = 1) -> List[str]:
+    def split_and_hash(cls, key:str ,add_to_half: int = 1) -> List[str]:
         half_key = (len(key) // 2) + add_to_half
-        return [cls.custom_convert_to_hash(key[half_key:]), cls.custom_convert_to_hash(key[:half_key])]
+        return [cls.custom_convert_to_hash(key[half_key:]), cls.custom_convert_to_hash(key[:half_key])] 
 
     # takes a list of hashes and return a twice as big list from spliting anf hashing each hash
     @classmethod
@@ -114,8 +115,21 @@ class Keys:
         len_chars = len(get_characters_list())
         new_number = 0
         numbers_list = [ int(num) for num in numbers_list]
+        """
+                to add a extra layer of security you can make your own function that takes a list
+                and does some opertaion on them and then returns it in the example below it shows 
+                a function that take a list of 4 elements and return a list of so that way i remove 
+                the last element and then add it again later
 
-        if len(numbers_list) < 4:
+                last_number = numbers_list.pop()
+                numbers_list = double_pendulum(numbers_list)
+                numbers_list.append(last_number)
+
+                depending on the function it will make the function take much more time 
+        """
+
+
+        if len(numbers_list) < 5:
             raise ValueError("Templist should  consist of at least 5 items")
 
         try:
