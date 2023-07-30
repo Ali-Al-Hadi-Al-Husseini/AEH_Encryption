@@ -1,5 +1,5 @@
 from .characters_list import get_characters_list
-from double_pendulum import double_pendulum
+# from double_pendulum import double_pendulum
 
 from numpy import array,empty,  ndarray
 from hashlib import sha256,shake_256,md5,blake2s,sha3_256,sha3_512
