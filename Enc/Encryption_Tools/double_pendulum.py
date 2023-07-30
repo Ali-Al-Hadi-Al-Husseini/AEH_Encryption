@@ -34,4 +34,3 @@ def double_pendulum(state):
     return [int(abs(num)) for num in temp]
 
 
-print(double_pendulum([65,38,116,94]))
